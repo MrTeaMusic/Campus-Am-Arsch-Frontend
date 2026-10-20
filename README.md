@@ -1,3 +1,7 @@
+> **Fork mit CampusDual-V2-Unterstützung.** Dieses Repo basiert auf [fnschmidt/campus-unbloat](https://github.com/fnschmidt/campus-unbloat) und läuft mit dem V2-fähigen Backend [MrTeaMusic/Campus-Unbloat](https://github.com/MrTeaMusic/Campus-Unbloat).
+> Änderungen: Umleitung auf `/` statt `/login`, Fehlermeldungen bei geändertem CampusDual (502) und bei noch nicht portierten Funktionen (501), Notendurchschnitt ohne unbewertete Module, Leipziger Mensen über OpenMensa (die Studentenwerk-Seite liefert seit September 2026 einen veralteten Plan).
+> Hinweis: Das Original enthält keine Lizenzdatei. Die Rechte am ursprünglichen Code liegen bei den Autoren.
+
 # campus.unbloat.app
 
 CampusUnbloat is the go-to home for any[^1] BA student. It combines both CampusDual and Studentenwerk data into a modern and fast webapp.
