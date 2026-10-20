@@ -24,9 +24,13 @@
 		modal = $bindable<HTMLDialogElement | null>(null)
 	}: { grades: Array<CampusDualGrade>; modal: HTMLDialogElement | null } = $props();
 
-	const totalCps = untrack(() => grades).reduce((sum, item) => sum + item.credit_points, 0);
+	// only modules with an actual grade count (not yet graded ones are "?")
+	const gradedModules = untrack(() => grades).filter(
+		(item) => !Number.isNaN(parseFloat(item.grade.replace(',', '.'))) && item.credit_points > 0
+	);
+	const totalCps = gradedModules.reduce((sum, item) => sum + item.credit_points, 0);
 	const weightedAverage =
-		untrack(() => grades).reduce((sum, item) => {
+		gradedModules.reduce((sum, item) => {
 			return sum + parseFloat(item.grade.replace(',', '.')) * item.credit_points; // Convert string to number and add to sum
 		}, 0) / totalCps;
 
