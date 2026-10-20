@@ -3,8 +3,33 @@ import { browser } from '$app/environment';
 import { getDateAsUrlParam } from '$lib/TSHelpers/DateHelper';
 import type { MealGroup, SubMeal, openmensaMeal } from '$lib/types';
 
+/**
+ * The Studentenwerk Leipzig site currently serves a stale (September) menu for every date, so
+ * the Leipzig canteens are loaded from their OpenMensa counterpart (same data, kept up to date).
+ * Studentenwerk canteen id -> OpenMensa canteen id
+ */
+const OPENMENSA_ID_FOR_STUWE_ID: Record<number, number> = {
+	106: 63, // Mensa am Park
+	111: 68, // Mensa Peterssteinweg
+	115: 65, // Mensa am Elsterbecken
+	118: 64, // Mensa Academica
+	140: 69, // Mensa Schönauer Straße
+	153: 70, // Cafeteria Dittrichring
+	162: 67, // Mensa am Medizincampus
+	170: 66 // Mensa An den Tierkliniken
+};
+
 export async function fetchMeals(date: Date, canteenId: number): Promise<MealGroup[] | undefined> {
 	if (browser) {
+		const openMensaId = OPENMENSA_ID_FOR_STUWE_ID[canteenId];
+		if (openMensaId !== undefined) {
+			try {
+				return await fetchOpenMeals(date, openMensaId);
+			} catch {
+				// OpenMensa unreachable: fall back to the Studentenwerk data below
+			}
+		}
+
 		const date_str = getDateAsUrlParam(date);
 		const res = await fetch(`/api/mensa/canteens/${canteenId}/days/${date_str}`);
 
