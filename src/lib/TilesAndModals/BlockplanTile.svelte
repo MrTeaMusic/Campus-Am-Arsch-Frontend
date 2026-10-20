@@ -16,7 +16,10 @@
 	onMount(async () => {
 		const res = await fetch('/api/timeline');
 
-		if (!res.ok) {
+		if (res.status === 501) {
+			// not available in CampusDual V2 yet
+			timeline = { fachsemester: [], theoriesemester: [], praxissemester: [], specials: [] };
+		} else if (!res.ok) {
 			toastError(await res.text());
 			return;
 		} else {

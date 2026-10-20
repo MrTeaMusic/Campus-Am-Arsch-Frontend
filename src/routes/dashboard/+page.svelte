@@ -17,7 +17,7 @@
 	import { every as _every, some as _some, isEqual as _isEqual } from 'lodash-es';
 	import DashReorderModal from '$lib/TilesAndModals/DashReorderModal.svelte';
 	import NotificationDrawer from '$lib/components/page/NotificationDrawer.svelte';
-	import { toastError } from '$lib/stores/toast';
+	import { toastError, toastWarn } from '$lib/stores/toast';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { faBell } from '@fortawesome/free-solid-svg-icons';
 
@@ -56,6 +56,11 @@
 		};
 
 		fetchReminders();
+
+		toastWarn(
+			'Prüfungsanmeldung, Blockplan und Hinweise sind mit CampusDual V2 noch nicht verfügbar.',
+			{ timeoutMs: 8000 }
+		);
 	});
 
 	async function fetchReminders() {
@@ -64,7 +69,10 @@
 
 		const res = await fetch('/api/reminders');
 
-		if (!res.ok) {
+		if (res.status === 501) {
+			// not available in CampusDual V2 yet, keep the bell hidden
+			return;
+		} else if (!res.ok) {
 			toastError(await res.text());
 		} else {
 			reminders = await res.json();

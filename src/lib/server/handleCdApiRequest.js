@@ -28,6 +28,10 @@ export async function handleApiRequest(cookies, endpoint, error_message, options
 			if (response.status === 429) {
 				throw new ReferenceError();
 			}
+			// feature not ported to CampusDual V2 yet: let the client decide how to show that
+			if (response.status === 501) {
+				return new Response('Mit CampusDual V2 noch nicht verfügbar', { status: 501 });
+			}
 			throw new Error();
 		}
 

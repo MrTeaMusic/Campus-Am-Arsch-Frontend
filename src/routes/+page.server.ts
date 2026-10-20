@@ -34,6 +34,10 @@ export const actions: Actions = {
 					case 401:
 						message = 'Nutzer/Passwort ungültig';
 						break;
+					case 502:
+						message =
+							'CampusDual ist gerade nicht erreichbar oder hat sich geändert. Bitte später erneut versuchen.';
+						break;
 					case 500:
 						message = `Interner Fehler (500): ${await response.text()}`;
 						break;

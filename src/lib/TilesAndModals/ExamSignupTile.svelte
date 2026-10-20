@@ -25,7 +25,11 @@
 
 		const res1 = await fetch('/api/examsignup');
 
-		if (!res1.ok) {
+		if (res1.status === 501) {
+			// not available in CampusDual V2 yet
+			signupOptions = [];
+			signUppable = 0;
+		} else if (!res1.ok) {
 			let error = await res1.text();
 			toastError(error);
 		} else {
