@@ -15,17 +15,18 @@
 		modal: HTMLDialogElement | null;
 	} = $props();
 
+	// responses can arrive out of order when switching quickly: only the latest request may win
+	let latestRequest = 0;
+
 	async function handleMealsFetch(
 		date: SvelteDate,
 		canteenId: number
 	): Promise<MealGroup[] | undefined> {
 		try {
 			if (canteenId > 0) {
-				mealGroups = await fetchMeals(date, canteenId);
-				return mealGroups;
+				return await fetchMeals(date, canteenId);
 			} else {
-				mealGroups = await fetchOpenMeals(date, canteenId * -1);
-				return mealGroups;
+				return await fetchOpenMeals(date, canteenId * -1);
 			}
 		} catch (e) {
 			toastError(e instanceof Error ? e.message : String(e));
@@ -35,7 +36,11 @@
 	async function handleSelectChange(e: CustomEvent<MensaSelectorEvent>) {
 		if (!e.detail) return;
 
-		mealGroups = await handleMealsFetch(e.detail.date, e.detail.canteenId);
+		const request = ++latestRequest;
+		const meals = await handleMealsFetch(e.detail.date, e.detail.canteenId);
+		if (request === latestRequest) {
+			mealGroups = meals;
+		}
 	}
 </script>
 
