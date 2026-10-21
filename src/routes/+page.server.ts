@@ -78,7 +78,7 @@ export const actions: Actions = {
 				}
 
 				return fail(500, {
-					message: 'CampusUnbloat ist nicht verfügbar.'
+					message: 'Campus-Am-Arsch ist nicht verfügbar.'
 				});
 			} else {
 				throw error;

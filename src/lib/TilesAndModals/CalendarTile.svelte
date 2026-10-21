@@ -93,6 +93,12 @@
 		}
 	});
 
+	// V1 liefert "KÜRZEL-Modulname", V2 oft nur den Modulnamen
+	function moduleName(title: string): string {
+		const idx = title.indexOf('-');
+		return (idx >= 0 ? title.slice(idx + 1) : title).trim();
+	}
+
 	function fetchedToUnixEvents(fetched: fetchedCalendar): EventUnix[] {
 		let newEventsUnix: EventUnix[] = [];
 
@@ -100,7 +106,7 @@
 			newEventsUnix.push({
 				start: element.start,
 				end: element.end,
-				title: element.title.split('-')[1],
+				title: moduleName(element.title) || element.description,
 				room: element.room,
 				sroom: element.sroom,
 				instructor: element.instructor,
