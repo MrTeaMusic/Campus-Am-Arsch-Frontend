@@ -9,6 +9,9 @@
 		faUpRightFromSquare
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faGithub } from '@fortawesome/free-brands-svg-icons';
+
+	const version = `Build ${__APP_BUILD__} · ${__APP_COMMIT__}`;
+	const builtAt = new Date(__APP_BUILT_AT__).toLocaleString('de-DE');
 </script>
 
 <!-- Obere Navigationsleiste; Padding oben respektiert Safe-Area-Inset für nicht-eckige Bildschirme -->
@@ -19,7 +22,10 @@
 	<!-- <div class="w-24 dark:brightness-90 dark:invert dark:saturate-0">
 		<Logo />
 	</div> -->
-	<p class="text-xl font-bold">Campus-Am-Arsch</p>
+	<div class="flex flex-col leading-tight">
+		<p class="text-xl font-bold">Campus-Am-Arsch</p>
+		<p class="font-mono text-[10px] opacity-60" title="Gebaut am {builtAt}">{version}</p>
+	</div>
 	<div class="flex flex-row space-x-1">
 		<div class="dropdown dropdown-center">
 			<div tabindex="0" role="button" class="btn my-1 btn-circle btn-soft btn-sm btn-primary">
