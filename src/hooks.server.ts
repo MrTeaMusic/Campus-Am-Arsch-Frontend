@@ -38,11 +38,16 @@ function check_env_impressum() {
 	}
 }
 
+// Der Commit-Hash steht in den Icon-Adressen (siehe app.html). Mit jedem neuen Stand holen Browser
+// und iOS die Icons deshalb neu, statt sie aus dem Cache zu nehmen.
+const transformPageChunk = ({ html }: { html: string }) =>
+	html.replaceAll('%icon-ver%', __APP_COMMIT__);
+
 export const handle: Handle = async ({ event, resolve }) => {
 	// don't redirect form data
 	if (event.url.pathname == '/') {
 		if (event.request.headers.get('content-type') == 'application/x-www-form-urlencoded') {
-			return resolve(event);
+			return resolve(event, { transformPageChunk });
 		}
 	}
 
@@ -58,5 +63,5 @@ export const handle: Handle = async ({ event, resolve }) => {
 		return Response.redirect(new URL('/dashboard', event.url));
 	}
 
-	return resolve(event);
+	return resolve(event, { transformPageChunk });
 };
