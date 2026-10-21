@@ -2,9 +2,9 @@
 > Änderungen: Umleitung auf `/` statt `/login`, Fehlermeldungen bei geändertem CampusDual (502) und bei noch nicht portierten Funktionen (501), Notendurchschnitt ohne unbewertete Module, Leipziger Mensen über OpenMensa (die Studentenwerk-Seite liefert seit September 2026 einen veralteten Plan).
 > Hinweis: Das Original enthält keine Lizenzdatei. Die Rechte am ursprünglichen Code liegen bei den Autoren.
 
-# campus.unbloat.app
+# campus.Am Arsch.app
 
-CampusUnbloat is the go-to home for any[^1] BA student. It combines both CampusDual and Studentenwerk data into a modern and fast webapp.
+Campus Am Arsch is the go-to home for any[^1] BA student. It combines both CampusDual and Studentenwerk data into a modern and fast webapp.
 This is the frontend and main repository.
 
 [^1]: Hundreds of canteens in Germany are supported thanks to [OpenMensa](https://github.com/openmensa/openmensa), but Studentenwerk Leipzig has 'native' support.
