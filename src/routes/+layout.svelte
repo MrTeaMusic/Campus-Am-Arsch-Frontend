@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import CampusTitleBar from '$lib/components/page/CampusTitleBar.svelte';
 	import ToastHost from '$lib/components/page/ToastHost.svelte';
 	import { page } from '$app/state';
@@ -14,7 +13,7 @@
 			/iPhone/i.test(navigator.userAgent) &&
 			!window.matchMedia('(display-mode: standalone)').matches
 		) {
-			iosPWASplash('/splash-icon.png', '#15191E');
+			iosPWASplash('/splash-icon.png?v=2', '#15191E');
 		}
 
 		const onVisibilityChange = () => {
@@ -40,10 +39,6 @@
 		}
 	}
 </script>
-
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
 
 {#if page.route.id === '/'}
 	<div class="flex min-h-dvh flex-col">
