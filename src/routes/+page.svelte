@@ -80,7 +80,7 @@
 							Ich stimme zu, dass sich
 							<span
 								class="bg-linear-to-br from-primary to-accent box-decoration-clone bg-clip-text text-transparent"
-								>CampusUnbloat</span
+								>Campus-Am-Arsch</span
 							>
 							in meinem Namen bei CampusDual einloggt.
 							<span class="block text-xs opacity-70">Daten werden nur lokal gespeichert.</span>

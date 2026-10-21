@@ -19,7 +19,7 @@
 	<!-- <div class="w-24 dark:brightness-90 dark:invert dark:saturate-0">
 		<Logo />
 	</div> -->
-	<p class="text-xl font-bold">CampusUnbloat</p>
+	<p class="text-xl font-bold">Campus-Am-Arsch</p>
 	<div class="flex flex-row space-x-1">
 		<div class="dropdown dropdown-center">
 			<div tabindex="0" role="button" class="btn my-1 btn-circle btn-soft btn-sm btn-primary">
