@@ -1,31 +1,25 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 
-	import {
-		type CampusDualGrade,
-		type CampusGradeMetadata,
-		type CampusGradeStats
-	} from '$lib/types';
-	import { toastError } from '$lib/stores/toast';
+	import { type CampusDualGrade } from '$lib/types';
 
-	import GradeStatsPopup from '$lib/Popups/GradeStatsPopup.svelte';
 	import DashboardModal from '$lib/DashboardModal.svelte';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
-	import {
-		faCalendar,
-		faChartColumn,
-		faCoins,
-		faGraduationCap,
-		faXmark
-	} from '@fortawesome/free-solid-svg-icons';
+	import { faCalendar, faCoins, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 
 	let {
 		grades,
 		modal = $bindable<HTMLDialogElement | null>(null)
 	}: { grades: Array<CampusDualGrade>; modal: HTMLDialogElement | null } = $props();
 
+	// not yet graded modules and exams are shown as "?" or empty, those are left out
+	const isGraded = (grade: string) => grade.trim() !== '' && grade.trim() !== '?';
+	const gradedGrades = untrack(() => grades)
+		.filter((item) => isGraded(item.grade))
+		.map((item) => ({ ...item, subgrades: item.subgrades.filter((sub) => isGraded(sub.grade)) }));
+
 	// only modules with an actual grade count (not yet graded ones are "?")
-	const gradedModules = untrack(() => grades).filter(
+	const gradedModules = gradedGrades.filter(
 		(item) => !Number.isNaN(parseFloat(item.grade.replace(',', '.'))) && item.credit_points > 0
 	);
 	const totalCps = gradedModules.reduce((sum, item) => sum + item.credit_points, 0);
@@ -34,7 +28,7 @@
 			return sum + parseFloat(item.grade.replace(',', '.')) * item.credit_points; // Convert string to number and add to sum
 		}, 0) / totalCps;
 
-	let filteredGrades: Array<CampusDualGrade> = $state(untrack(() => grades));
+	let filteredGrades: Array<CampusDualGrade> = $state(gradedGrades);
 
 	let filter = $state('');
 	let filterElement: HTMLInputElement;
@@ -49,48 +43,13 @@
 		accordionOpenIndex = 0;
 
 		if (filter == '') {
-			filteredGrades = grades;
+			filteredGrades = gradedGrades;
 		} else if (filter) {
 			const words = filter.split(' ').map((word) => word.trim().toLowerCase());
-			filteredGrades = grades.filter((grade) =>
+			filteredGrades = gradedGrades.filter((grade) =>
 				words.every((word) => grade.name.toLowerCase().includes(word))
 			);
 		}
-	}
-
-	let gradeStats: CampusGradeStats | null = $state(null);
-	// dirty global used for stats popup
-	let myGrade: number = $state(0);
-	let gradeStatsModal: HTMLDialogElement | null = null;
-
-	async function getGradeStats(internal_metadata?: CampusGradeMetadata) {
-		gradeStats = null;
-		const response = await fetch('/api/gradestats', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(internal_metadata)
-		});
-
-		if (!response.ok) {
-			toastError(await response.text());
-			// const toastSettings = getToastSettings({
-			// 	text: await response.text(),
-			// 	class: ToastPayloadClass.error
-			// });
-			// toastStore.trigger(toastSettings);
-			// return;
-		} else {
-			gradeStats = await response.json();
-		}
-	}
-
-	function getRoundedGrade(grade: string): number {
-		const float = parseFloat(grade.replace(',', '.'));
-		if (isNaN(float)) return 0;
-
-		return Math.round(float);
 	}
 </script>
 
@@ -193,20 +152,6 @@
 												{subgrade.bekanntgabe} ⋅ {subgrade.akad_period}
 											</div>
 										</div>
-
-										{#if Boolean(subgrade.internal_metadata)}
-											<button
-												aria-label="Ergebnisse aller Studenten anzeigen"
-												onclick={() => {
-													myGrade = getRoundedGrade(subgrade.grade);
-													gradeStatsModal?.showModal();
-													getGradeStats(subgrade.internal_metadata);
-												}}
-												class="btn btn-square shrink-0 btn-sm btn-primary"
-											>
-												<FontAwesomeIcon icon={faChartColumn} />
-											</button>
-										{/if}
 									</div>
 								{/each}
 							</div>
@@ -221,25 +166,3 @@
 		</div>
 	{/if}
 </DashboardModal>
-
-<dialog class="modal select-none" bind:this={gradeStatsModal}>
-	<div class="modal-box max-w-2xl">
-		<form method="dialog" class="flex items-center justify-between">
-			{#if gradeStats}
-				<h4 class="text-center text-lg font-semibold">
-					{gradeStats.one +
-						gradeStats.two +
-						gradeStats.three +
-						gradeStats.four +
-						gradeStats.ronmodus} Ergebnisse
-				</h4>
-			{:else}
-				<div></div>
-			{/if}
-			<button class="btn btn-circle"><FontAwesomeIcon icon={faXmark} /></button>
-		</form>
-
-		<GradeStatsPopup {gradeStats} {myGrade} />
-	</div>
-	<form method="dialog" class="modal-backdrop"><button>close</button></form>
-</dialog>
