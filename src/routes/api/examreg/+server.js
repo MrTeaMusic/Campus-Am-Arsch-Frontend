@@ -1,5 +1,5 @@
 import { handleApiRequest } from '$lib/server/handleCdApiRequest';
 
 export async function GET({ cookies }) {
-	return handleApiRequest(cookies, 'get_examverfahren', 'Fehler bei der Abmeldeoptionen-Anfrage');
+	return handleApiRequest(cookies, 'get_examreg_status', 'Fehler bei der Anmeldestatus-Anfrage');
 }
