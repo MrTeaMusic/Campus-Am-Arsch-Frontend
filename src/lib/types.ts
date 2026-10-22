@@ -87,41 +87,6 @@ export type BasicUserData = {
 	user: string;
 };
 
-export type CampusDualSignupOption = {
-	name: string;
-	verfahren: string;
-	pruefart: string;
-	status: string;
-	signup_information: string;
-	exam_date?: string;
-	exam_time?: string;
-	exam_room?: string;
-	warning_message?: string;
-	signup_until?: string;
-	internal_metadata?: CampusExamMetadata;
-};
-
-export type CampusDualVerfahrenOption = {
-	name: string;
-	verfahren: string;
-	pruefart: string;
-	status: string;
-	signup_information: string;
-	exam_date?: string;
-	exam_time?: string;
-	exam_room?: string;
-	warning_message?: string;
-	signoff_until?: string;
-	internal_metadata?: CampusExamMetadata;
-};
-
-export type CampusExamMetadata = {
-	assessment: string;
-	peryr: string;
-	perid: string;
-	offerno: string;
-};
-
 export type ExamStats = {
 	total: number;
 	successful: number;
@@ -204,89 +169,14 @@ export type CampusGradeStats = {
 	ronmodus: number;
 };
 
-export enum SignupOrVerfahren {
-	signup,
-	verfahren
-}
-
-export interface CdReminders {
-	electives: number;
-	exams: number;
-	latest: Latest[];
-	semester: number;
-	upcoming: Upcoming[];
-}
-
-export interface Latest {
-	acad_session: string;
-	acad_year: string;
-	agrdate: string;
-	agrtype: string;
-	awobject: string;
-	awobject_short: string;
-	awotype: string;
-	awstatus: string;
-	bookdate: string;
-	bookreason: string;
-	cpgraded: string;
-	cpunit: string;
-	gradesymbol: string;
-}
-
-export interface Upcoming {
-	beguz: string;
-	comment: string;
-	enduz: string;
-	evdat: string;
-	instructor: string;
-	location: string;
-	objid: string;
-	room: string;
-	sinstructor: string;
-	sm_short: string;
-	sm_stext: string;
-	sroom: string;
-}
-
-export type Timeline = {
-	fachsemester: TimelineEvent[];
-	theoriesemester: TimelineEvent[];
-	praxissemester: TimelineEvent[];
-	specials: TimelineEvent[];
+/** Ob die Prüfungsanmeldung gerade möglich ist (Campus-API: /get_examreg_status) */
+export type ExamRegStatus = {
+	open: boolean;
+	periods: {
+		peryr: string;
+		perid: string;
+		current: boolean;
+		offers: number;
+		booked: number;
+	}[];
 };
-
-export type TimelineEvent = {
-	name: string;
-	description: string;
-	color: string;
-	start: string;
-	end: string;
-};
-
-export interface CampusExamDetails {
-	ev_agrtype_text: string;
-	ev_audtype_text: string;
-	ev_continue_indicator: string;
-	ev_dereg_end: string;
-	ev_dereg_endtime: string;
-	ev_duration: string;
-	ev_durunit: string;
-	ev_exambegtime: string;
-	ev_examdate: string;
-	ev_examendtime: string;
-	ev_examorg_text: string;
-	ev_examorg_longtext: string;
-	ev_instructor: string;
-	ev_location_short: string;
-	ev_location_stext: string;
-	ev_obtype_text: string;
-	ev_reason: string;
-	ev_regis_begin: string;
-	ev_regis_begtime: string;
-	ev_regis_end: string;
-	ev_regis_endtime: string;
-	ev_room_short: string;
-	ev_room_stext: string;
-	ev_short: string;
-	ev_stext: string;
-}
