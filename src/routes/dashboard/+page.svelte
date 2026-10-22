@@ -12,6 +12,7 @@
 	import CalendarTile from '$lib/TilesAndModals/CalendarTile.svelte';
 	import ExamStatusTile from '$lib/TilesAndModals/ExamStatusTile.svelte';
 	import GradesTile from '$lib/TilesAndModals/GradesTile.svelte';
+	import SlotMachineTile from '$lib/TilesAndModals/SlotMachineTile.svelte';
 	import MensaTile from '$lib/TilesAndModals/MensaTile.svelte';
 	import DashReorderModal from '$lib/TilesAndModals/DashReorderModal.svelte';
 
@@ -23,7 +24,8 @@
 		GradesTile,
 		CalendarTile,
 		MensaTile,
-		ExamStatusTile
+		ExamStatusTile,
+		SlotMachineTile
 	};
 
 	let basicUserData: BasicUserData = JSON.parse(data.user_basic!);
