@@ -84,25 +84,14 @@
 		{/if}
 
 		{#if page.route.id == '/impressum' || page.route.id == '/datenschutz'}
-			<button
+			<!-- full page load: the server redirects to the dashboard when logged in -->
+			<a
+				href={resolve('/')}
+				data-sveltekit-reload
 				class="btn my-1 rounded-full btn-soft btn-sm btn-accent"
-				onclick={async () => {
-					const response = await fetch('/');
-
-					if (response.redirected) {
-						if (response.url.endsWith('/dashboard')) {
-							goto(resolve('/dashboard'));
-						} else {
-							// should never happen
-							window.location.href = response.url;
-						}
-					} else {
-						goto(resolve('/'));
-					}
-				}}
 			>
 				Zurück
-			</button>
+			</a>
 		{/if}
 		{#if page.route.id == '/dashboard'}
 			<button
