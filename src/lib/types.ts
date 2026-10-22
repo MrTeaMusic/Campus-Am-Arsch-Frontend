@@ -165,3 +165,14 @@ export type ExamRegStatus = {
 		booked: number;
 	}[];
 };
+
+/** Eintrag im gemeinsamen Kalender (Campus-API: /get_shared_events), Zeiten als `YYYY-MM-DDTHH:MM` */
+export type SharedEvent = {
+	id: number;
+	title: string;
+	description: string;
+	start: string;
+	end: string;
+	author: string;
+	mine: boolean;
+};
