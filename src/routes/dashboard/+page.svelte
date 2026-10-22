@@ -12,6 +12,7 @@
 	import CalendarTile from '$lib/TilesAndModals/CalendarTile.svelte';
 	import ExamStatusTile from '$lib/TilesAndModals/ExamStatusTile.svelte';
 	import GradesTile from '$lib/TilesAndModals/GradesTile.svelte';
+	import BoardTile from '$lib/TilesAndModals/BoardTile.svelte';
 	import SlotMachineTile from '$lib/TilesAndModals/SlotMachineTile.svelte';
 	import SharedCalendarTile from '$lib/TilesAndModals/SharedCalendarTile.svelte';
 	import MensaTile from '$lib/TilesAndModals/MensaTile.svelte';
@@ -27,6 +28,7 @@
 		SharedCalendarTile,
 		MensaTile,
 		ExamStatusTile,
+		BoardTile,
 		SlotMachineTile
 	};
 
@@ -44,7 +46,8 @@
 
 		componentProps = {
 			BasicInfoTile: { basicUserData },
-			SharedCalendarTile: { basicUserData }
+			SharedCalendarTile: { basicUserData },
+			BoardTile: { basicUserData }
 		};
 	});
 </script>

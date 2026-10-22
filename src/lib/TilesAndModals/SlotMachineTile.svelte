@@ -4,7 +4,7 @@
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 
-	const GAMES_URL = 'https://mondschein-arcade.kevin-ullmann2609.workers.dev';
+	const GAMES_URL = 'https://mondschein-arcade.kevinkevin67.workers.dev';
 	const UNI = '📚';
 	const HOME = '🛏️';
 	const BEER = '🍺';

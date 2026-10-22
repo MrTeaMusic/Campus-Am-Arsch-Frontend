@@ -20,3 +20,13 @@ export function formatSharedTime(start: string, end: string): string {
 		? `${dateFormat.format(s)} ${time(s)} – ${time(e)}`
 		: `${dateFormat.format(s)} ${time(s)} – ${dateFormat.format(e)} ${time(e)}`;
 }
+
+/** "22.10., 11:30" for a UTC timestamp of the board */
+export function formatPostTime(createdAt: string): string {
+	return new Date(createdAt).toLocaleString('de-DE', {
+		day: '2-digit',
+		month: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+}
