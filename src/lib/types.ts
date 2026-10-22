@@ -176,3 +176,12 @@ export type SharedEvent = {
 	author: string;
 	mine: boolean;
 };
+
+/** Nachricht auf dem Schwarzen Brett (Campus-API: /get_board_posts), `created_at` in UTC */
+export type BoardPost = {
+	id: number;
+	text: string;
+	author: string;
+	created_at: string;
+	mine: boolean;
+};

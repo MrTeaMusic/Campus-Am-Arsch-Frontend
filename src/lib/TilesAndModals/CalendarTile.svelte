@@ -9,6 +9,7 @@
 	import { unixEventsToEvents } from '$lib/Calendar/CalendarFuncs';
 	import type { EventUnix } from '$lib/types';
 	import { toastError } from '$lib/stores/toast';
+	import { loadSharedEvents, sharedEvents, sharedToUnixEvents } from '$lib/stores/sharedEvents';
 	import { Calendar, List } from '@event-calendar/core';
 	import TileInteractiveElementWrapper from './TileInteractiveElementWrapper.svelte';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
@@ -80,13 +81,20 @@
 		}
 	};
 
+	// timetable plus the entries of the shared calendar
+	let allEvents = $derived([
+		...($storedEventsUnix ?? []),
+		...sharedToUnixEvents($sharedEvents ?? [])
+	]);
+
 	$effect(() => {
-		if ($storedEventsUnix && ec) ec.setOption('events', unixEventsToEvents($storedEventsUnix));
+		if (ec) ec.setOption('events', unixEventsToEvents(allEvents));
 	});
 
 	onMount(async () => {
 		storedEventsUnix = persistentStore('storedEvents', []);
 		lastEventUpdate = persistentStore('lastEventUpdate', null);
+		if (!$sharedEvents) loadSharedEvents();
 
 		if (olderThanOneHour($lastEventUpdate)) {
 			fetchCalendar();
@@ -149,7 +157,6 @@
 		let parsedUnix = fetchedToUnixEvents(fetchedCalendar);
 
 		storedEventsUnix!.set(parsedUnix);
-		ec!.setOption('events', unixEventsToEvents(parsedUnix));
 
 		if (parsedUnix.length > 0) {
 			lastEventUpdate.set(new Date());
@@ -159,7 +166,7 @@
 	}
 </script>
 
-<CalendarModal bind:modal {storedEventsUnix}></CalendarModal>
+<CalendarModal bind:modal events={allEvents}></CalendarModal>
 
 <DashboardTile
 	title="Kalender"

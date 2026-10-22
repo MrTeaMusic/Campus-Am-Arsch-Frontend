@@ -5,6 +5,7 @@ export const components: string[] = [
 	'SharedCalendarTile',
 	'MensaTile',
 	'ExamStatusTile',
+	'BoardTile',
 	'SlotMachineTile'
 ];
 
@@ -15,6 +16,7 @@ export const tileNames: Map<string, string> = new Map([
 	['SharedCalendarTile', 'Gemeinsamer Kalender'],
 	['MensaTile', 'Mensa'],
 	['ExamStatusTile', 'Prüfungen'],
+	['BoardTile', 'Schwarzes Brett'],
 	['SlotMachineTile', 'Uni oder nicht?']
 ]);
 

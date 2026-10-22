@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { type EventUnix } from '$lib/types';
 	import DashboardModal from '$lib/DashboardModal.svelte';
-	import type { Writable } from 'svelte/store';
 	import { type SvelteComponent } from 'svelte';
 	import { Calendar, TimeGrid } from '@event-calendar/core';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
@@ -13,10 +12,10 @@
 	let ec: SvelteComponent | undefined = $state();
 	let {
 		modal = $bindable<HTMLDialogElement | null>(null),
-		storedEventsUnix
+		events
 	}: {
 		modal: HTMLDialogElement | null;
-		storedEventsUnix: Writable<EventUnix[]> | undefined;
+		events: EventUnix[];
 	} = $props();
 
 	let eventInfoModal = $state<HTMLDialogElement | null>(null);
@@ -28,7 +27,7 @@
 
 	let options = $derived({
 		view: 'timeGridWeek',
-		events: unixEventsToEvents($storedEventsUnix ?? []),
+		events: unixEventsToEvents(events),
 		height: '100%',
 		allDaySlot: false,
 		hiddenDays: hiddenDays,
@@ -51,10 +50,7 @@
 	});
 
 	$effect(() => {
-		if (storedEventsUnix && $storedEventsUnix) {
-			const events = unixEventsToEvents($storedEventsUnix);
-			ec!.setOption('events', events);
-		}
+		ec?.setOption('events', unixEventsToEvents(events));
 	});
 
 	let isCurrentWeek = $state(() => {

@@ -1,30 +1,29 @@
 <script lang="ts">
 	import DashboardTile from '$lib/DashboardTile.svelte';
 	import SharedCalendarModal from './SharedCalendarModal.svelte';
-	import type { BasicUserData, SharedEvent } from '$lib/types';
-	import { toastError } from '$lib/stores/toast';
-	import { formatSharedTime, localDateTime } from '$lib/TSHelpers/SharedCalendarHelper';
+	import type { BasicUserData } from '$lib/types';
+	import { formatSharedTime } from '$lib/TSHelpers/SharedCalendarHelper';
+	import { loadSharedEvents, sharedEvents } from '$lib/stores/sharedEvents';
 	import { onMount } from 'svelte';
 
 	let { basicUserData }: { basicUserData: BasicUserData } = $props();
 
 	let modal: HTMLDialogElement | null = $state(null);
-	let events = $state<SharedEvent[] | null>(null);
+	// the entries of the past weeks are only shown in the timetable calendar
+	let events = $derived(
+		$sharedEvents && $sharedEvents.filter((event) => new Date(event.end) >= new Date())
+	);
 
-	async function load() {
-		const res = await fetch(`/api/sharedcal?from=${encodeURIComponent(localDateTime(new Date()))}`);
-		if (!res.ok) {
-			toastError(await res.text());
-			return;
-		}
-		events = await res.json();
-	}
-
-	onMount(load);
+	onMount(loadSharedEvents);
 </script>
 
 {#if events !== null}
-	<SharedCalendarModal bind:modal {events} author={basicUserData.first_name} reload={load} />
+	<SharedCalendarModal
+		bind:modal
+		{events}
+		author={basicUserData.first_name}
+		reload={loadSharedEvents}
+	/>
 {/if}
 
 <DashboardTile
