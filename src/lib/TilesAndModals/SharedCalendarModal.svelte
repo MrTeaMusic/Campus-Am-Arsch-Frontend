@@ -3,6 +3,8 @@
 	import type { SharedEvent } from '$lib/types';
 	import { toastError } from '$lib/stores/toast';
 	import { formatSharedTime, localDateTime } from '$lib/TSHelpers/SharedCalendarHelper';
+	import { disablePush, enablePush, getPushState, type PushState } from '$lib/TSHelpers/PushHelper';
+	import { onMount } from 'svelte';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -61,6 +63,25 @@
 		}
 	}
 
+	let pushState = $state<PushState | null>(null);
+	let pushBusy = $state(false);
+
+	onMount(async () => {
+		pushState = await getPushState();
+	});
+
+	async function togglePush() {
+		pushBusy = true;
+		try {
+			if (pushState === 'on') await disablePush();
+			else await enablePush();
+		} catch (e) {
+			toastError(e instanceof Error ? e.message : 'Benachrichtigungen nicht möglich');
+		}
+		pushState = await getPushState();
+		pushBusy = false;
+	}
+
 	async function remove(event: SharedEvent) {
 		if (!confirm(`„${event.title}“ löschen?`)) return;
 		if (await send({ action: 'delete', id: event.id })) await reload();
@@ -72,6 +93,29 @@
 		<button class="btn mb-3 btn-primary" onclick={() => openForm()}>
 			<FontAwesomeIcon icon={faPlus} /> Neuer Eintrag
 		</button>
+
+		{#if pushState === 'on' || pushState === 'off'}
+			<label class="mb-3 flex cursor-pointer items-center gap-3">
+				<input
+					type="checkbox"
+					class="toggle toggle-primary"
+					checked={pushState === 'on'}
+					disabled={pushBusy}
+					onchange={togglePush}
+				/>
+				<span class="text-sm">Erinnerung einen Tag vorher aufs Gerät</span>
+			</label>
+		{:else if pushState === 'needs-install'}
+			<p class="mb-3 text-sm opacity-70">
+				Für Erinnerungen auf dem iPhone: in Safari auf Teilen tippen, „Zum Home-Bildschirm“ wählen
+				und die App von dort öffnen.
+			</p>
+		{:else if pushState === 'blocked'}
+			<p class="mb-3 text-sm opacity-70">
+				Benachrichtigungen sind für diese Seite blockiert. Erlaube sie in den Browser- oder
+				Systemeinstellungen, dann kannst du Erinnerungen einschalten.
+			</p>
+		{/if}
 
 		{#if events.length > 0}
 			<div class="space-y-2">
