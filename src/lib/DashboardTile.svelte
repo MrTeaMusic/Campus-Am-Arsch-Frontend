@@ -53,13 +53,15 @@
 	}
 </script>
 
-<button
+<!-- not clickable tiles must not be a (disabled) button, or their own buttons and links stop working -->
+<svelte:element
+	this={clickable ? 'button' : 'div'}
 	on:click={() => {
 		if (ready) dispatch('click');
 	}}
 	on:pointerdown={handlePointerStart}
-	aria-label={title}
-	disabled={!clickable}
+	aria-label={clickable ? title : undefined}
+	role={clickable ? undefined : 'group'}
 	class="{pointerPressed
 		? 'scale-[97%]'
 		: ''} flex h-full w-full flex-col items-center space-y-1 rounded-2xl bg-base-100 p-4 pt-2 pb-3 shadow-2xl/10 transition-transform sm:w-96"
@@ -109,4 +111,4 @@
 			<slot name="footer" />
 		</TileInteractiveElementWrapper>
 	{/if}
-</button>
+</svelte:element>
