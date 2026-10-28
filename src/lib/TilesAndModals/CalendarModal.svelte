@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { type EventUnix } from '$lib/types';
 	import DashboardModal from '$lib/DashboardModal.svelte';
-	import { type SvelteComponent } from 'svelte';
+	import { onMount, type SvelteComponent } from 'svelte';
 	import { Calendar, TimeGrid } from '@event-calendar/core';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 	import { unixEventsToEvents } from '$lib/Calendar/CalendarFuncs';
 	import EventInfoModal from '$lib/components/calendar/EventInfoModal.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
+	import { getNextWeekday, isSameDate } from '$lib/TSHelpers/DateHelper';
 
 	let ec: SvelteComponent | undefined = $state();
 	let {
@@ -25,13 +26,36 @@
 
 	const hiddenDays: dayOfWeek[] = [0, 6];
 
+	// on phones five days side by side leave no room for the module names, so show one day there
+	let narrow = $state(false);
+	onMount(() => {
+		const query = window.matchMedia('(max-width: 639px)');
+		narrow = query.matches;
+		const onChange = (e: MediaQueryListEvent) => (narrow = e.matches);
+		query.addEventListener('change', onChange);
+		return () => query.removeEventListener('change', onChange);
+	});
+
+	// the day view would show empty weekends, so step from Friday straight to Monday and back
+	function stepDay(forward: boolean) {
+		if (!ec) return;
+		const date = new SvelteDate(ec.getOption('date'));
+		do {
+			date.setDate(date.getDate() + (forward ? 1 : -1));
+		} while (hiddenDays.includes(date.getDay() as dayOfWeek));
+		ec.setOption('date', date);
+	}
+
 	const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 	let options = $derived({
-		view: 'timeGridWeek',
+		view: narrow ? 'timeGridDay' : 'timeGridWeek',
 		events: unixEventsToEvents(events),
 		height: '100%',
 		allDaySlot: false,
+		// taller hours on phones so that even short lectures fit their full name
+		slotHeight: narrow ? 40 : 32,
+		scrollTime: '07:30:00',
 		nowIndicator: true,
 		hiddenDays: hiddenDays,
 		// "Mo" over "26", the day number of today is highlighted via CSS
@@ -66,6 +90,7 @@
 	let isCurrentWeek = $state(() => {
 		const view = ec?.getView();
 		if (!view) return false;
+		if (narrow) return isSameDate(new Date(ec!.getOption('date')), getNextWeekday());
 
 		const start = new SvelteDate(view.currentStart);
 		start.setDate(start.getDate() + 1);
@@ -90,6 +115,10 @@
 		<button
 			disabled={isCurrentWeek()}
 			onclick={() => {
+				if (narrow) {
+					if (ec) ec.setOption('date', getNextWeekday());
+					return;
+				}
 				let today = new SvelteDate();
 				// sonntag in deutschland ^= teil der vorh. Woche, in USA schon nächste woche, daher -1
 				today.setDate(today.getDate() - 1);
@@ -102,16 +131,18 @@
 		<div class="flex gap-1">
 			<button
 				class="btn btn-circle btn-soft btn-sm btn-primary"
-				aria-label="Vorherige Woche"
+				aria-label={narrow ? 'Vorheriger Tag' : 'Vorherige Woche'}
 				onclick={() => {
-					if (ec) ec.prev();
+					if (narrow) stepDay(false);
+					else if (ec) ec.prev();
 				}}><FontAwesomeIcon icon={faChevronLeft} /></button
 			>
 			<button
 				class="btn btn-circle btn-soft btn-sm btn-primary"
-				aria-label="Nächste Woche"
+				aria-label={narrow ? 'Nächster Tag' : 'Nächste Woche'}
 				onclick={() => {
-					if (ec) ec.next();
+					if (narrow) stepDay(true);
+					else if (ec) ec.next();
 				}}><FontAwesomeIcon icon={faChevronRight} /></button
 			>
 		</div>
@@ -119,6 +150,7 @@
 
 	<div
 		lang="de"
+		class:dayView={narrow}
 		class="weekCalendar mt-3 min-h-0 grow overflow-hidden rounded-box border border-base-300/70"
 	>
 		<Calendar bind:this={ec} plugins={[TimeGrid]} {options} />
@@ -172,15 +204,32 @@
 		box-shadow: none;
 		overflow: hidden;
 	}
+	/* time and name in one flowing line, so short lectures still show their whole name */
 	:global(.weekCalendar .ec-event-body) {
-		display: flex;
-		flex-direction: column;
+		display: block;
 		min-width: 0;
 		line-height: 1.25;
 	}
 	:global(.weekCalendar .ev-time) {
+		margin-inline-end: 0.3rem;
 		font-size: 0.7rem;
 		opacity: 0.85;
+	}
+	/* a name that does not fit its lecture is shown in full while hovering it */
+	:global(.weekCalendar .ec-event:hover) {
+		overflow: visible;
+		z-index: 10;
+	}
+	:global(.weekCalendar .ec-event:hover .ec-event-body) {
+		align-self: flex-start;
+		width: calc(100% + 0.75rem);
+		margin: -0.25rem -0.375rem;
+		padding: 0.25rem 0.375rem;
+		border-radius: 0 0.5rem 0.5rem 0;
+		background: inherit;
+	}
+	:global(.weekCalendar.dayView .ev-title) {
+		font-size: 0.875rem;
 	}
 	:global(.weekCalendar .ev-title) {
 		font-size: 0.75rem;
