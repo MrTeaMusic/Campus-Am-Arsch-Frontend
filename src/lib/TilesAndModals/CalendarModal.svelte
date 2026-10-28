@@ -86,18 +86,18 @@
 
 				if (ec) ec.setOption('date', today);
 			}}
-			class="btn mr-1 rounded-full btn-sm btn-accent">Heute</button
+			class="btn mr-1 rounded-full btn-soft btn-sm btn-primary">Heute</button
 		>
 
-		<div class="join grid grid-cols-2 gap-0.5">
+		<div class="flex gap-1">
 			<button
-				class="btn join-item w-10 rounded-l-full btn-sm btn-accent"
+				class="btn btn-circle btn-soft btn-sm btn-primary"
 				onclick={() => {
 					if (ec) ec.prev();
 				}}><FontAwesomeIcon icon={faArrowLeft} /></button
 			>
 			<button
-				class="btn join-item w-10 rounded-r-full btn-sm btn-accent"
+				class="btn btn-circle btn-soft btn-sm btn-primary"
 				onclick={() => {
 					if (ec) ec.next();
 				}}><FontAwesomeIcon icon={faArrowRight} /></button

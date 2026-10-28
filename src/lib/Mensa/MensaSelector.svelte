@@ -168,7 +168,7 @@
 <div class="flex w-full flex-row items-center justify-between">
 	<p class="font-bold">{getAltDayString(selectedDate)}</p>
 
-	<div class="flex flex-row space-x-0.5">
+	<div class="flex flex-row items-center gap-1">
 		<button
 			disabled={isSameDate(selectedDate, getNextWeekday())}
 			onclick={() => {
@@ -176,17 +176,17 @@
 				// sonntag in deutschland ^= teil der vorh. Woche, in USA schon nächste woche, daher -1
 				selectedDate = getNextWeekday() as SvelteDate;
 			}}
-			class="btn mr-1 rounded-full btn-sm btn-accent">Heute</button
+			class="btn mr-1 rounded-full btn-soft btn-sm btn-primary">Heute</button
 		>
 
 		<button
-			class="btn join-item w-10 rounded-l-full btn-sm btn-accent"
+			class="btn btn-circle btn-soft btn-sm btn-primary"
 			onclick={() => {
 				handleDaySelection(false);
 			}}><FontAwesomeIcon icon={faArrowLeft} /></button
 		>
 		<button
-			class="btn join-item w-10 rounded-r-full btn-sm btn-accent"
+			class="btn btn-circle btn-soft btn-sm btn-primary"
 			onclick={() => {
 				handleDaySelection(true);
 			}}><FontAwesomeIcon icon={faArrowRight} /></button
@@ -198,7 +198,7 @@
 	<div class="modal-box max-w-2xl">
 		<form method="dialog" class="flex items-center justify-between">
 			<h4 class="text-center text-lg font-semibold">OpenMensa</h4>
-			<button class="btn btn-circle" aria-label="Schließen">
+			<button class="btn btn-circle btn-ghost btn-sm" aria-label="Schließen">
 				<FontAwesomeIcon icon={faXmark} />
 			</button>
 		</form>
@@ -209,7 +209,7 @@
 				bind:value={openMensaFilter}
 				type="text"
 				placeholder="Suchen..."
-				class="input-bordered input w-full"
+				class="input w-full bg-base-200 focus:bg-base-100"
 			/>
 
 			{#if openMensaLoading}
@@ -221,7 +221,7 @@
 					{#each openMensaFilteredCanteens as canteen (canteen.id)}
 						<button
 							type="button"
-							class="flex items-center rounded-2xl bg-primary/20 px-4 py-2"
+							class="flex items-center rounded-xl border border-base-300 bg-base-200 px-4 py-3 hover:bg-base-300"
 							onclick={() => handleOpenMensaSelection(canteen.id, canteen.name)}
 						>
 							<p class="grow text-left">{canteen.name}</p>

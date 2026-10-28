@@ -59,7 +59,7 @@
 >
 	{#each mealGroup.sub_meals as submeal (submeal)}
 		{@const [icon, color, textWhite] = getGroupIcon(mealGroup.meal_type)}
-		<div class="card w-full bg-base-100 shadow-md">
+		<div class="card w-full border border-base-300 bg-base-100">
 			<div class="card-body p-4 pb-2">
 				<span>
 					<span class="badge h-5 badge-xs badge-primary">{mealGroup.meal_type}</span>

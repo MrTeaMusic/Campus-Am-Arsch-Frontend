@@ -13,7 +13,7 @@
 	import { Calendar, List } from '@event-calendar/core';
 	import TileInteractiveElementWrapper from './TileInteractiveElementWrapper.svelte';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
-	import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+	import { faCalendarDays, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 	let isReloading: boolean = $state(false);
 
@@ -170,6 +170,7 @@
 
 <DashboardTile
 	title="Kalender"
+	icon={faCalendarDays}
 	on:reload={() => {
 		fetchCalendar();
 	}}
@@ -180,21 +181,23 @@
 >
 	<div class="flex w-full flex-row items-center justify-between">
 		{#if ec}
-			<p class="font-bold">{getAltDayString(ec.getOption('date'))}</p>
+			<p class="text-sm font-semibold opacity-70">{getAltDayString(ec.getOption('date'))}</p>
 		{/if}
 		<TileInteractiveElementWrapper>
-			<div class="join grid grid-cols-2 gap-0.5">
+			<div class="flex gap-1">
 				<button
-					class="btn join-item w-10 rounded-l-full btn-sm btn-accent"
+					class="btn btn-circle btn-soft btn-sm btn-primary"
+					aria-label="Vorheriger Tag"
 					onclick={() => {
 						if (ec) ec.prev();
-					}}><FontAwesomeIcon icon={faArrowLeft} /></button
+					}}><FontAwesomeIcon icon={faChevronLeft} /></button
 				>
 				<button
-					class="btn join-item w-10 rounded-r-full btn-sm btn-accent"
+					class="btn btn-circle btn-soft btn-sm btn-primary"
+					aria-label="Nächster Tag"
 					onclick={() => {
 						if (ec) ec.next();
-					}}><FontAwesomeIcon icon={faArrowRight} /></button
+					}}><FontAwesomeIcon icon={faChevronRight} /></button
 				>
 			</div>
 		</TileInteractiveElementWrapper>
@@ -220,5 +223,18 @@
 	}
 	:global(.tileCalendar .ec) {
 		--ec-border-color: none;
+	}
+	:global(.tileCalendar .ec-list .ec-event) {
+		margin: 0.375rem 0;
+		padding: 0.6rem 0.75rem;
+		border-radius: 0.75rem;
+		background-color: var(--color-base-200);
+		text-align: left;
+		white-space: pre-line;
+		line-height: 1.4;
+	}
+	:global(.tileCalendar .ec-no-events) {
+		padding: 1.5rem 0;
+		opacity: 0.7;
 	}
 </style>

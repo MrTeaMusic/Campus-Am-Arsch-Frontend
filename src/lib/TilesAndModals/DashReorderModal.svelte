@@ -33,8 +33,9 @@
 <button
 	aria-label="Anordnung ändern"
 	onclick={() => modal?.showModal()}
-	class="btn btn-circle btn-primary"
-	><FontAwesomeIcon icon={faUpDownLeftRight} />
+	title="Anordnung ändern"
+	class="btn btn-circle border-base-300 bg-base-100 shadow-sm"
+	><FontAwesomeIcon icon={faUpDownLeftRight} class="opacity-70" />
 </button>
 
 {#if items}
@@ -44,7 +45,9 @@
 			<!--Knopf zum schließen des Modals-->
 			<form method="dialog" class="flex items-center justify-between">
 				<h4 class="text-center text-lg font-semibold">Anordnung ändern</h4>
-				<button class="btn btn-circle"><FontAwesomeIcon icon={faXmark} /></button>
+				<button class="btn btn-circle btn-ghost btn-sm" aria-label="Schließen"
+					><FontAwesomeIcon icon={faXmark} /></button
+				>
 			</form>
 
 			<div
@@ -56,10 +59,10 @@
 				{#each items as item (item.id)}
 					<div
 						animate:flip={{ duration: 200 }}
-						class="flex items-center rounded-2xl bg-primary/20 px-4 py-2"
+						class="flex cursor-grab items-center rounded-xl border border-base-300 bg-base-200 px-4 py-3"
 					>
 						<p class="grow">{item.title}</p>
-						<FontAwesomeIcon icon={faBars} />
+						<FontAwesomeIcon icon={faBars} class="opacity-50" />
 					</div>
 				{/each}
 			</div>

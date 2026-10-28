@@ -54,7 +54,7 @@
 <DashboardModal bind:modal title="Schwarzes Brett">
 	<form class="mb-3 flex items-start gap-2" onsubmit={post}>
 		<textarea
-			class="textarea-bordered textarea w-full"
+			class="textarea w-full bg-base-200 focus:bg-base-100"
 			rows="2"
 			maxlength="500"
 			required
@@ -71,7 +71,7 @@
 	{#if posts.length > 0}
 		<div class="space-y-2">
 			{#each posts as entry (entry.id)}
-				<div class="card bg-base-200 shadow">
+				<div class="card bg-base-200">
 					<div class="card-body gap-1 p-4">
 						<div class="flex items-start gap-2">
 							<div class="min-w-0 grow">
@@ -82,7 +82,7 @@
 							</div>
 							{#if entry.mine}
 								<button
-									class="btn btn-square btn-sm btn-accent"
+									class="btn btn-square btn-soft btn-sm btn-accent"
 									aria-label="Nachricht löschen"
 									onclick={() => remove(entry)}><FontAwesomeIcon icon={faTrash} /></button
 								>

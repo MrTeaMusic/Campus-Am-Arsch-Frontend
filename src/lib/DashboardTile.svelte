@@ -5,11 +5,13 @@
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import {
 		faCheck,
+		faChevronRight,
 		faRotateRight,
-		faUpRightAndDownLeftFromCenter
+		type IconDefinition
 	} from '@fortawesome/free-solid-svg-icons';
 
 	export let title: string;
+	export let icon: IconDefinition | undefined = undefined;
 	export let clickable: boolean = true;
 	export let reloadable: boolean = false;
 	export let reloading: boolean = false;
@@ -63,22 +65,30 @@
 	aria-label={clickable ? title : undefined}
 	role={clickable ? undefined : 'group'}
 	class="{pointerPressed
-		? 'scale-[97%]'
-		: ''} flex h-full w-full flex-col items-center space-y-1 rounded-2xl bg-base-100 p-4 pt-2 pb-3 shadow-2xl/10 transition-transform sm:w-96"
+		? 'scale-[98%]'
+		: ''} flex h-full w-full flex-col items-center gap-2 rounded-box border border-base-300/70 bg-base-100 p-4 text-base-content shadow-sm transition-[transform,box-shadow] sm:w-96 {clickable &&
+	ready
+		? 'cursor-pointer hover:shadow-md'
+		: ''}"
 >
-	<div class="flex w-full flex-row items-center justify-between">
-		{#if clickable}
-			<FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} />
+	<div class="flex w-full flex-row items-center gap-3">
+		{#if icon}
+			<span
+				class="grid size-9 shrink-0 place-content-center rounded-xl bg-primary/10 text-primary"
+				aria-hidden="true"
+			>
+				<FontAwesomeIcon {icon} />
+			</span>
 		{/if}
-		<header class="w-full grow text-center text-xl font-bold">{title}</header>
+		<header class="grow text-left text-lg font-semibold tracking-tight">{title}</header>
 		{#if reloadable}
 			<TileInteractiveElementWrapper>
 				{#if reloading}
-					<span class="loading -mt-0.5 -mr-0.5 mb-0.5 ml-0.5 loading-sm loading-dots"></span>
+					<span class="loading loading-sm loading-dots opacity-60"></span>
 				{:else}
 					<button
 						on:click={() => dispatch('reload')}
-						class="group hover:cursor-pointer"
+						class="group grid size-8 place-content-center rounded-full text-sm opacity-60 hover:cursor-pointer hover:bg-base-200 hover:opacity-100"
 						aria-label="Daten neu laden"
 					>
 						<span class="block group-hover:hidden">
@@ -90,8 +100,11 @@
 					</button>
 				{/if}
 			</TileInteractiveElementWrapper>
-		{:else if clickable}
-			<div class="w-4"></div>
+		{/if}
+		{#if clickable}
+			<span class="text-sm opacity-40" aria-hidden="true">
+				<FontAwesomeIcon icon={faChevronRight} />
+			</span>
 		{/if}
 	</div>
 	{#if ready}
@@ -102,7 +115,7 @@
 		{#if ready}
 			<slot />
 		{:else}
-			<span class="loading h-42 loading-xl loading-dots"></span>
+			<span class="loading h-42 loading-lg loading-dots opacity-40"></span>
 		{/if}
 	</div>
 

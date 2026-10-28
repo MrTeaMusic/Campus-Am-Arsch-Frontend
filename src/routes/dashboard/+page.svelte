@@ -34,6 +34,12 @@
 
 	let basicUserData: BasicUserData = JSON.parse(data.user_basic!);
 
+	const today = new Date().toLocaleDateString('de-DE', {
+		weekday: 'long',
+		day: 'numeric',
+		month: 'long'
+	});
+
 	let componentOrder: Writable<string[]>;
 	let componentProps: Record<string, object>;
 
@@ -54,16 +60,19 @@
 
 <PageContainer>
 	{#if basicUserData}
-		<div class="mx-auto flex w-[94%] items-center space-x-1 sm:w-96 lg:w-[48.6rem]">
-			<h1 class="grow text-3xl font-bold">
-				Hallo, {basicUserData.first_name}.
-			</h1>
+		<div class="mx-auto flex w-[96%] items-end gap-3 pt-2 sm:w-96 lg:w-[48.75rem]">
+			<div class="grow">
+				<p class="text-sm font-medium opacity-60">{today}</p>
+				<h1 class="text-3xl font-bold tracking-tight">
+					Hallo, {basicUserData.first_name} 👋
+				</h1>
+			</div>
 
 			<DashReorderModal {componentOrder} />
 		</div>
 	{/if}
 	{#if $componentOrder && componentProps}
-		<div class="mx-auto grid w-[98%] grid-cols-1 gap-3 sm:w-auto lg:grid-cols-2">
+		<div class="mx-auto grid w-[96%] grid-cols-1 gap-3 sm:w-auto lg:grid-cols-2">
 			<!-- create portals -->
 			{#each components as _, idx (idx)}
 				<span class="contents" id="portal{idx}"></span>

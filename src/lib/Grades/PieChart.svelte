@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
-	import { Chart, PieController, ArcElement, Tooltip } from 'chart.js';
+	import { Chart, DoughnutController, ArcElement, Tooltip } from 'chart.js';
 
 	import type { ExamStats } from '$lib/types';
 
@@ -19,21 +19,28 @@
 		datasets: [
 			{
 				data: hasData ? [stats.successful, stats.unsuccessful, stats.unassessed] : [10, 1.5, 1],
-				backgroundColor: [getColor('--color-primary'), getColor('--color-accent'), '#c1c1c1'],
-				borderWidth: 0
+				backgroundColor: [
+					getColor('--color-primary'),
+					getColor('--color-accent'),
+					getColor('--color-base-300')
+				],
+				borderWidth: 0,
+				borderRadius: 4,
+				spacing: 2
 			}
 		]
 	};
 
-	Chart.register(PieController, ArcElement, Tooltip);
+	Chart.register(DoughnutController, ArcElement, Tooltip);
 	let pieChartElement: HTMLCanvasElement;
 
 	onMount(() => {
 		if (browser) {
 			new Chart(pieChartElement, {
-				type: 'pie',
+				type: 'doughnut',
 				data: chartData,
 				options: {
+					cutout: '68%',
 					plugins: {
 						tooltip: hasData ? {} : { enabled: false }
 					}
@@ -43,6 +50,6 @@
 	});
 </script>
 
-<div class="size-28 {hasData ? '' : 'opacity-75 grayscale'}">
+<div class="size-28 shrink-0 {hasData ? '' : 'opacity-75 grayscale'}">
 	<canvas bind:this={pieChartElement}></canvas>
 </div>

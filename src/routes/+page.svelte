@@ -11,13 +11,22 @@
 	let loginInProgress = $state(false);
 </script>
 
-<div class="flex h-full w-full items-center justify-center p-4">
-	<div class="card w-full max-w-md bg-base-200 shadow-xl">
+<div class="flex h-full w-full flex-col items-center justify-center gap-6 p-4">
+	<div class="flex flex-col items-center gap-3 text-center">
+		<img
+			src="/android-chrome-192x192.png"
+			alt=""
+			class="size-20 rounded-3xl shadow-lg ring-1 ring-base-300"
+			width="80"
+			height="80"
+		/>
+		<div>
+			<h1 class="text-3xl font-bold tracking-tight">Willkommen zurück</h1>
+			<p class="mt-1 opacity-60">Stundenplan, Noten und Mensa an einem Ort.</p>
+		</div>
+	</div>
+	<div class="card w-full max-w-md border border-base-300/70 bg-base-100 shadow-sm">
 		<div class="card-body gap-4">
-			<div class="space-y-1 text-center">
-				<h1 class="text-2xl font-semibold">Anmelden</h1>
-			</div>
-
 			{#if form?.message}
 				<div role="alert" class="alert alert-error">
 					<span>{form.message}</span>
@@ -27,7 +36,7 @@
 			<form
 				action="?/login"
 				method="POST"
-				class="space-y-3"
+				class="space-y-4"
 				use:enhance={() => {
 					// Clear the previous response (e.g. bad credentials) and show a loading state.
 					form = null;
@@ -39,10 +48,8 @@
 					};
 				}}
 			>
-				<div class="form-control">
-					<label class="label" for="username">
-						<span class="label-text">CampusDual-Benutzername</span>
-					</label>
+				<div class="flex flex-col gap-1.5">
+					<label class="text-sm font-medium" for="username">CampusDual-Benutzername</label>
 					<input
 						id="username"
 						name="username"
@@ -50,25 +57,23 @@
 						autocomplete="username"
 						required
 						placeholder="500xxxx"
-						class="input-bordered input w-full"
+						class="input w-full bg-base-200 focus:bg-base-100"
 					/>
 				</div>
 
-				<div class="form-control">
-					<label class="label" for="password">
-						<span class="label-text">CampusDual-Passwort</span>
-					</label>
+				<div class="flex flex-col gap-1.5">
+					<label class="text-sm font-medium" for="password">CampusDual-Passwort</label>
 					<input
 						id="password"
 						name="password"
 						type="password"
 						autocomplete="current-password"
 						required
-						class="input-bordered input w-full"
+						class="input w-full bg-base-200 focus:bg-base-100"
 					/>
 				</div>
 
-				<div class=" space-y-2 rounded-2xl bg-base-100 p-3 shadow-lg">
+				<div class="space-y-2 rounded-xl bg-base-200 p-3">
 					<label class="label w-full cursor-pointer items-start justify-start gap-3">
 						<input
 							type="checkbox"
@@ -88,19 +93,21 @@
 					</label>
 
 					<div class="mt-2 flex justify-end space-x-2">
-						<a class="btn btn-soft btn-sm btn-primary" href={resolve('/impressum')}>Impressum</a>
-						<a class="btn btn-soft btn-sm btn-primary" href={resolve('/datenschutz')}>Datenschutz</a
-						>
+						<a class="btn btn-ghost btn-xs" href={resolve('/impressum')}>Impressum</a>
+						<a class="btn btn-ghost btn-xs" href={resolve('/datenschutz')}>Datenschutz</a>
 					</div>
 				</div>
 
 				<div class="pt-2">
 					<button
 						type="submit"
-						class="btn w-full btn-primary"
+						class="btn w-full btn-lg btn-primary"
 						disabled={loginInProgress}
 						aria-busy={loginInProgress}
 					>
+						{#if loginInProgress}
+							<span class="loading loading-sm loading-spinner"></span>
+						{/if}
 						Anmelden
 					</button>
 				</div>

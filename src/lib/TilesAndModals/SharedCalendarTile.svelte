@@ -5,6 +5,7 @@
 	import { formatSharedTime } from '$lib/TSHelpers/SharedCalendarHelper';
 	import { loadSharedEvents, sharedEvents } from '$lib/stores/sharedEvents';
 	import { onMount } from 'svelte';
+	import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
 	let { basicUserData }: { basicUserData: BasicUserData } = $props();
 
@@ -28,22 +29,26 @@
 
 <DashboardTile
 	title="Gemeinsamer Kalender"
+	icon={faUserGroup}
 	on:click={() => modal?.showModal()}
 	ready={events !== null}
 >
 	{#if events && events.length > 0}
-		<ul class="w-full space-y-2 py-2 text-left">
+		<ul class="flex w-full flex-col gap-2 text-left">
 			{#each events.slice(0, 3) as event (event.id)}
-				<li>
-					<p class="truncate font-bold">{event.title}</p>
-					<p class="text-sm opacity-70">{formatSharedTime(event.start, event.end)}</p>
+				<li class="flex items-center gap-3 rounded-xl bg-base-200 px-3 py-2">
+					<span class="h-8 w-1 shrink-0 rounded-full bg-secondary"></span>
+					<div class="min-w-0">
+						<p class="truncate font-semibold">{event.title}</p>
+						<p class="text-sm opacity-60">{formatSharedTime(event.start, event.end)}</p>
+					</div>
 				</li>
 			{/each}
 		</ul>
 		{#if events.length > 3}
-			<p class="text-xs opacity-60">und {events.length - 3} weitere</p>
+			<p class="w-full text-left text-xs opacity-60">und {events.length - 3} weitere</p>
 		{/if}
 	{:else}
-		<p class="py-6 opacity-70">Noch keine Einträge. Tippe, um den ersten anzulegen.</p>
+		<p class="py-6 text-sm opacity-60">Noch keine Einträge. Tippe, um den ersten anzulegen.</p>
 	{/if}
 </DashboardTile>

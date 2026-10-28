@@ -120,7 +120,7 @@
 		{#if events.length > 0}
 			<div class="space-y-2">
 				{#each events as event (event.id)}
-					<div class="card bg-base-200 shadow">
+					<div class="card bg-base-200">
 						<div class="card-body gap-1 p-4">
 							<div class="flex items-start gap-2">
 								<div class="min-w-0 grow">
@@ -140,7 +140,7 @@
 										onclick={() => openForm(event)}><FontAwesomeIcon icon={faPen} /></button
 									>
 									<button
-										class="btn btn-square btn-sm btn-accent"
+										class="btn btn-square btn-soft btn-sm btn-accent"
 										aria-label="Eintrag löschen"
 										onclick={() => remove(event)}><FontAwesomeIcon icon={faTrash} /></button
 									>
@@ -160,7 +160,7 @@
 			<label class="floating-label">
 				<span>Titel</span>
 				<input
-					class="input-bordered input w-full"
+					class="input w-full bg-base-200 focus:bg-base-100"
 					type="text"
 					maxlength="100"
 					required
@@ -171,7 +171,7 @@
 			<label class="floating-label">
 				<span>Beginn</span>
 				<input
-					class="input-bordered input w-full"
+					class="input w-full bg-base-200 focus:bg-base-100"
 					type="datetime-local"
 					required
 					bind:value={start}
@@ -180,7 +180,7 @@
 			<label class="floating-label">
 				<span>Ende</span>
 				<input
-					class="input-bordered input w-full"
+					class="input w-full bg-base-200 focus:bg-base-100"
 					type="datetime-local"
 					required
 					bind:value={end}
@@ -189,7 +189,7 @@
 			<label class="floating-label">
 				<span>Beschreibung (optional)</span>
 				<textarea
-					class="textarea-bordered textarea w-full"
+					class="textarea w-full bg-base-200 focus:bg-base-100"
 					maxlength="500"
 					rows="3"
 					placeholder="Beschreibung (optional)"
