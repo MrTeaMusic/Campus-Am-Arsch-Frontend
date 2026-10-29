@@ -120,11 +120,12 @@
 		{#if events.length > 0}
 			<div class="space-y-2">
 				{#each events as event (event.id)}
-					<div class="card bg-base-200 shadow">
-						<div class="card-body gap-1 p-4">
-							<div class="flex items-start gap-2">
+					<div class="card bg-base-200">
+						<div class="card-body gap-1 p-3">
+							<div class="flex items-start gap-3">
+								<span class="mt-0.5 h-10 w-1 shrink-0 rounded-full bg-secondary"></span>
 								<div class="min-w-0 grow">
-									<div class="font-bold">{event.title}</div>
+									<div class="font-semibold">{event.title}</div>
 									<div class="text-sm opacity-70">{formatSharedTime(event.start, event.end)}</div>
 									{#if event.description}
 										<p class="mt-1 text-sm whitespace-pre-line">{event.description}</p>
@@ -135,12 +136,12 @@
 								</div>
 								{#if event.mine}
 									<button
-										class="btn btn-square btn-sm btn-primary"
+										class="btn btn-square btn-soft btn-sm btn-primary"
 										aria-label="Eintrag bearbeiten"
 										onclick={() => openForm(event)}><FontAwesomeIcon icon={faPen} /></button
 									>
 									<button
-										class="btn btn-square btn-sm btn-accent"
+										class="btn btn-square btn-soft btn-sm btn-accent"
 										aria-label="Eintrag löschen"
 										onclick={() => remove(event)}><FontAwesomeIcon icon={faTrash} /></button
 									>
@@ -152,7 +153,7 @@
 			</div>
 		{:else}
 			<div class="py-8 text-center">
-				<p class="text-lg opacity-70">Noch keine Einträge. Lege den ersten an!</p>
+				<p class="opacity-60">Noch keine Einträge. Lege den ersten an!</p>
 			</div>
 		{/if}
 	{:else}
@@ -160,7 +161,7 @@
 			<label class="floating-label">
 				<span>Titel</span>
 				<input
-					class="input-bordered input w-full"
+					class="input w-full bg-base-200 focus:bg-base-100"
 					type="text"
 					maxlength="100"
 					required
@@ -171,7 +172,7 @@
 			<label class="floating-label">
 				<span>Beginn</span>
 				<input
-					class="input-bordered input w-full"
+					class="input w-full bg-base-200 focus:bg-base-100"
 					type="datetime-local"
 					required
 					bind:value={start}
@@ -180,7 +181,7 @@
 			<label class="floating-label">
 				<span>Ende</span>
 				<input
-					class="input-bordered input w-full"
+					class="input w-full bg-base-200 focus:bg-base-100"
 					type="datetime-local"
 					required
 					bind:value={end}
@@ -189,7 +190,7 @@
 			<label class="floating-label">
 				<span>Beschreibung (optional)</span>
 				<textarea
-					class="textarea-bordered textarea w-full"
+					class="textarea w-full bg-base-200 focus:bg-base-100"
 					maxlength="500"
 					rows="3"
 					placeholder="Beschreibung (optional)"

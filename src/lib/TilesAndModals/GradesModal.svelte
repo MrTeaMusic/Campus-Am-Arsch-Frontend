@@ -65,7 +65,7 @@
 			<input
 				bind:this={filterElement}
 				bind:value={filter}
-				class="input-bordered input w-full"
+				class="input w-full bg-base-200 focus:bg-base-100"
 				type="text"
 				placeholder="Suchen..."
 			/>
@@ -86,7 +86,7 @@
 	{#if filteredGrades && filteredGrades.length > 0}
 		<div class="space-y-2">
 			{#each filteredGrades as grade, idx (grade)}
-				<div class="collapse-arrow collapse bg-base-100 shadow-md">
+				<div class="collapse-arrow collapse border border-base-300 bg-base-100">
 					<input
 						type="checkbox"
 						checked={idx === accordionOpenIndex}
@@ -108,7 +108,7 @@
 					</div>
 
 					<div class="collapse-content space-y-4">
-						<div class="card bg-base-200 shadow">
+						<div class="card bg-base-200">
 							<div class="card-body gap-4 p-4">
 								<div class="flex items-center gap-3">
 									<span class="badge size-7 badge-primary">
@@ -132,7 +132,7 @@
 							</div>
 						</div>
 
-						<div class="card bg-base-200 shadow">
+						<div class="card bg-base-200">
 							<div class="card-body gap-3 p-4">
 								{#each grade.subgrades as subgrade (subgrade)}
 									<div class="flex items-center gap-3">

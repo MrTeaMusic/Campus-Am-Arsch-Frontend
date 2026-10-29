@@ -10,15 +10,17 @@
 		class="modal-box flex h-full w-full max-w-full flex-col overflow-hidden rounded-none p-0 lg:h-[calc(100%-80px)] lg:w-3xl lg:rounded-2xl"
 	>
 		<div
-			class="absolute inset-x-0 top-0 z-30 flex h-[calc(env(safe-area-inset-top,0px)+4rem)] border-b border-b-base-300 bg-base-100"
+			class="absolute inset-x-0 top-0 z-30 flex h-[calc(env(safe-area-inset-top,0px)+4rem)] border-b border-b-base-300/70 bg-base-100/85 backdrop-blur-lg"
 		>
 			<div
 				class="mt-[env(safe-area-inset-top,0px)] flex w-full grow items-center justify-between px-4 select-none"
 			>
-				<h3 class="text-lg font-bold">{title}</h3>
+				<h3 class="text-lg font-bold tracking-tight">{title}</h3>
 				<div class="m-0 modal-action">
 					<form method="dialog">
-						<button class="btn btn-circle"><FontAwesomeIcon icon={faXmark} /></button>
+						<button class="btn btn-circle btn-ghost" aria-label="Schließen"
+							><FontAwesomeIcon icon={faXmark} /></button
+						>
 					</form>
 				</div>
 			</div>

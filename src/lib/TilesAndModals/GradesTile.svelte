@@ -9,6 +9,7 @@
 	import GradesModal from '$lib/TilesAndModals/GradesModal.svelte';
 	import PieChart from '$lib/Grades/PieChart.svelte';
 	import ChartLabel from '$lib/Grades/ChartLabel.svelte';
+	import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 
 	let modal: HTMLDialogElement | null = null;
 
@@ -48,20 +49,24 @@
 	<GradesModal bind:modal {grades}></GradesModal>
 {/if}
 
-<DashboardTile title="Noten" on:click={openModal} ready={Boolean(stats && grades)}>
-	{#if $gradesCountStore != grades.length}
-		<div class="flex w-full justify-end">
-			<span class="relative -top-8 left-2 -mb-6 badge rounded-full badge-primary">Neue Noten</span>
-		</div>
-	{/if}
-
-	<div class="flex h-full w-full flex-col items-center justify-center">
-		<PieChart {stats} />
-		{#if !(stats.successful || stats.unsuccessful || stats.unassessed)}
-			<p class="mt-3">Es gibt noch keine Einträge.</p>
-		{:else}
-			<div class="mt-4 flex">
-				<ul class="conic-list list w-full text-sm">
+<DashboardTile
+	title="Noten"
+	icon={faGraduationCap}
+	on:click={openModal}
+	ready={Boolean(stats && grades)}
+>
+	<div class="flex h-full w-full flex-col justify-center gap-3">
+		{#if $gradesCountStore != grades.length}
+			<div class="flex w-full">
+				<span class="badge badge-sm font-semibold badge-primary">Neue Noten</span>
+			</div>
+		{/if}
+		<div class="flex w-full items-center justify-center gap-5">
+			<PieChart {stats} />
+			{#if !(stats.successful || stats.unsuccessful || stats.unassessed)}
+				<p class="text-sm opacity-70">Es gibt noch keine Einträge.</p>
+			{:else}
+				<ul class="flex flex-col gap-1 text-left text-sm">
 					{#if stats.successful > 0}
 						<ChartLabel
 							label="Erfolg"
@@ -79,10 +84,15 @@
 						/>
 					{/if}
 					{#if stats.unassessed > 0}
-						<ChartLabel label="Ausstehend" value={stats.unassessed} {total} color="#c1c1c1" />
+						<ChartLabel
+							label="Ausstehend"
+							value={stats.unassessed}
+							{total}
+							color="var(--color-base-300)"
+						/>
 					{/if}
 				</ul>
-			</div>
-		{/if}
+			{/if}
+		</div>
 	</div>
 </DashboardTile>

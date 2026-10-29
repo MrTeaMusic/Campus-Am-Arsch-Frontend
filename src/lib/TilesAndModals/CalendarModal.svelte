@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { type EventUnix } from '$lib/types';
 	import DashboardModal from '$lib/DashboardModal.svelte';
-	import { type SvelteComponent } from 'svelte';
+	import { onMount, type SvelteComponent } from 'svelte';
 	import { Calendar, TimeGrid } from '@event-calendar/core';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
-	import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+	import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 	import { unixEventsToEvents } from '$lib/Calendar/CalendarFuncs';
 	import EventInfoModal from '$lib/components/calendar/EventInfoModal.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
+	import { getNextWeekday, isSameDate } from '$lib/TSHelpers/DateHelper';
 
 	let ec: SvelteComponent | undefined = $state();
 	let {
@@ -25,17 +26,62 @@
 
 	const hiddenDays: dayOfWeek[] = [0, 6];
 
+	// on phones five days side by side leave no room for the module names, so show one day there
+	let narrow = $state(false);
+	onMount(() => {
+		const query = window.matchMedia('(max-width: 639px)');
+		narrow = query.matches;
+		const onChange = (e: MediaQueryListEvent) => (narrow = e.matches);
+		query.addEventListener('change', onChange);
+		return () => query.removeEventListener('change', onChange);
+	});
+
+	// the day view would show empty weekends, so step from Friday straight to Monday and back
+	function stepDay(forward: boolean) {
+		if (!ec) return;
+		const date = new SvelteDate(ec.getOption('date'));
+		do {
+			date.setDate(date.getDate() + (forward ? 1 : -1));
+		} while (hiddenDays.includes(date.getDay() as dayOfWeek));
+		ec.setOption('date', date);
+	}
+
+	// a name that does not fit its lecture ends with "…", the full name is in the details on click
+	function clampToEvent(el: HTMLElement) {
+		const text = el.querySelector<HTMLElement>('.ev-text');
+		if (!text) return;
+		const fit = () => {
+			const style = getComputedStyle(el);
+			const room = el.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+			const lineHeight = parseFloat(getComputedStyle(text).lineHeight);
+			text.style.setProperty('--lines', String(Math.max(1, Math.floor(room / lineHeight))));
+		};
+		fit();
+		new ResizeObserver(fit).observe(el);
+	}
+
+	const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
 	let options = $derived({
-		view: 'timeGridWeek',
+		view: narrow ? 'timeGridDay' : 'timeGridWeek',
 		events: unixEventsToEvents(events),
 		height: '100%',
 		allDaySlot: false,
+		// taller hours on phones so that the module names have room
+		slotHeight: narrow ? 40 : 32,
+		scrollTime: '07:30:00',
+		nowIndicator: true,
 		hiddenDays: hiddenDays,
+		// "Mo" over "26", the day number of today is highlighted via CSS
+		dayHeaderFormat: (date: Date) => ({
+			html: `<span class="wd">${date.toLocaleDateString('de-DE', { weekday: 'short' }).replace('.', '')}</span><span class="dn">${date.getDate()}</span>`
+		}),
 		headerToolbar: {
 			start: '',
 			center: '',
 			end: ''
 		},
+		eventDidMount: (info: { el: HTMLElement }) => clampToEvent(info.el),
 		eventClick: (info: { event: unknown }) => {
 			selectedEvent = info.event;
 			eventInfoModal?.showModal();
@@ -45,7 +91,10 @@
 			timeText: string;
 		}) => {
 			const timeStart = info.event.start.toLocaleTimeString('de', { timeStyle: 'short' });
-			return `${info.event.title}\n${timeStart}`;
+			const title = typeof info.event.title === 'string' ? info.event.title : '';
+			return {
+				html: `<span class="ev-text"><span class="ev-time">${timeStart}</span><span class="ev-title">${escapeHtml(title)}</span></span>`
+			};
 		}
 	});
 
@@ -56,6 +105,7 @@
 	let isCurrentWeek = $state(() => {
 		const view = ec?.getView();
 		if (!view) return false;
+		if (narrow) return isSameDate(new Date(ec!.getOption('date')), getNextWeekday());
 
 		const start = new SvelteDate(view.currentStart);
 		start.setDate(start.getDate() + 1);
@@ -73,39 +123,128 @@
 <DashboardModal bind:modal title="Kalender">
 	<div class="flex w-full flex-row items-center">
 		{#if ec}
-			<p class="font-bold">{ec.getView().title}</p>
+			<p class="text-lg font-semibold tracking-tight">{ec.getView().title}</p>
 		{/if}
 		<span class="grow"></span>
 
 		<button
 			disabled={isCurrentWeek()}
 			onclick={() => {
+				if (narrow) {
+					if (ec) ec.setOption('date', getNextWeekday());
+					return;
+				}
 				let today = new SvelteDate();
 				// sonntag in deutschland ^= teil der vorh. Woche, in USA schon nächste woche, daher -1
 				today.setDate(today.getDate() - 1);
 
 				if (ec) ec.setOption('date', today);
 			}}
-			class="btn mr-1 rounded-full btn-sm btn-accent">Heute</button
+			class="btn mr-1 rounded-full btn-soft btn-sm btn-primary">Heute</button
 		>
 
-		<div class="join grid grid-cols-2 gap-0.5">
+		<div class="flex gap-1">
 			<button
-				class="btn join-item w-10 rounded-l-full btn-sm btn-accent"
+				class="btn btn-circle btn-soft btn-sm btn-primary"
+				aria-label={narrow ? 'Vorheriger Tag' : 'Vorherige Woche'}
 				onclick={() => {
-					if (ec) ec.prev();
-				}}><FontAwesomeIcon icon={faArrowLeft} /></button
+					if (narrow) stepDay(false);
+					else if (ec) ec.prev();
+				}}><FontAwesomeIcon icon={faChevronLeft} /></button
 			>
 			<button
-				class="btn join-item w-10 rounded-r-full btn-sm btn-accent"
+				class="btn btn-circle btn-soft btn-sm btn-primary"
+				aria-label={narrow ? 'Nächster Tag' : 'Nächste Woche'}
 				onclick={() => {
-					if (ec) ec.next();
-				}}><FontAwesomeIcon icon={faArrowRight} /></button
+					if (narrow) stepDay(true);
+					else if (ec) ec.next();
+				}}><FontAwesomeIcon icon={faChevronRight} /></button
 			>
 		</div>
 	</div>
 
-	<div class="min-h-0 grow">
+	<div
+		lang="de"
+		class:dayView={narrow}
+		class="weekCalendar mt-3 min-h-0 grow overflow-hidden rounded-box border border-base-300/70"
+	>
 		<Calendar bind:this={ec} plugins={[TimeGrid]} {options} />
 	</div>
 </DashboardModal>
+
+<style>
+	:global(.weekCalendar .ec) {
+		border: none;
+	}
+	:global(.weekCalendar .ec-toolbar) {
+		display: none;
+	}
+	:global(.weekCalendar .ec-header) {
+		border-inline: none;
+		background-color: var(--color-base-100);
+	}
+	:global(.weekCalendar .ec-col-head) {
+		padding: 0.4rem 0;
+	}
+	:global(.weekCalendar .ec-col-head .wd) {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		opacity: 0.55;
+	}
+	:global(.weekCalendar .ec-col-head .dn) {
+		display: inline-grid;
+		place-content: center;
+		width: 1.9rem;
+		height: 1.9rem;
+		border-radius: 999px;
+		font-size: 1rem;
+		font-weight: 700;
+	}
+	:global(.weekCalendar .ec-col-head.ec-today .dn) {
+		background-color: var(--color-primary);
+		color: var(--color-primary-content);
+	}
+	:global(.weekCalendar .ec-sidebar) {
+		font-size: 0.75rem;
+		color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+	}
+	:global(.weekCalendar .ec-event) {
+		cursor: pointer;
+		padding: 0.25rem 0.375rem;
+		border-radius: 0.5rem;
+		border-inline-start: 3px solid rgb(0 0 0 / 0.18);
+		box-shadow: none;
+		overflow: hidden;
+	}
+	:global(.weekCalendar .ec-event-body) {
+		display: block;
+		min-width: 0;
+	}
+	/* time and name flow as one text that ends with "…" where the lecture is too short */
+	:global(.weekCalendar .ev-text) {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: var(--lines, 2);
+		line-clamp: var(--lines, 2);
+		overflow: hidden;
+		font-size: 0.75rem;
+		line-height: 1.25;
+		/* long German compounds are hyphenated instead of being cut off */
+		overflow-wrap: break-word;
+		hyphens: auto;
+	}
+	:global(.weekCalendar.dayView .ev-text) {
+		font-size: 0.875rem;
+	}
+	:global(.weekCalendar .ev-time) {
+		margin-inline-end: 0.3rem;
+		font-size: 0.9em;
+		opacity: 0.85;
+	}
+	:global(.weekCalendar .ev-title) {
+		font-weight: 600;
+	}
+</style>

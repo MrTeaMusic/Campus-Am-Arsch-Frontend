@@ -31,6 +31,6 @@ export function sharedToUnixEvents(events: SharedEvent[]): EventUnix[] {
 		textColor: '#ffffff',
 		description: event.description,
 		remarks: '',
-		color: '#905bd5'
+		color: 'var(--color-secondary)'
 	}));
 }

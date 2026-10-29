@@ -16,9 +16,9 @@
 	></span> <span class="conic-label flex-auto">{label}</span>
 	<strong class="conic-value">{getPercentLabel()}</strong>
 </li> -->
-<li class="rounded-btn flex w-40 items-center space-y-1 hover:bg-base-200">
-	<span class="block h-5 w-5 shrink-0 rounded-full" style="background-color: {color};"></span>
+<li class="flex w-40 items-center gap-2">
+	<span class="block size-3 shrink-0 rounded-full" style="background-color: {color};"></span>
 
-	<span class="flex-1">{label}</span>
-	<strong>{getPercentLabel()}</strong>
+	<span class="flex-1 opacity-80">{label}</span>
+	<strong class="tabular-nums">{getPercentLabel()}</strong>
 </li>

@@ -29,7 +29,20 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="description" content="CampusDual 2027 Vision" />
+		<meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#121722" media="(prefers-color-scheme: dark)" />
 		<title>Campus-Am-Arsch</title>
+		<script>
+			// eigene Farbe und Hell/Dunkel vor dem ersten Bild setzen, sonst blitzt kurz das Standard-Design auf
+			try {
+				const a = JSON.parse(localStorage.getItem('appearance') || '{}');
+				if (a.accent && a.accent !== 'blau') document.documentElement.dataset.accent = a.accent;
+				if (a.mode === 'hell') document.documentElement.dataset.theme = 'campus';
+				if (a.mode === 'dunkel') document.documentElement.dataset.theme = 'campus-dark';
+			} catch {
+				// no stored choice
+			}
+		</script>
 		%sveltekit.head%
 	</head>
 
@@ -41,14 +54,3 @@
 		<div class="ec-auto-dark" style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
-<style>
-	body {
-		background-color: var(--color-base-200);
-	}
-	/* dark mode body background color */
-	@media (prefers-color-scheme: dark) {
-		body {
-			background-color: var(--color-base-300);
-		}
-	}
-</style>
