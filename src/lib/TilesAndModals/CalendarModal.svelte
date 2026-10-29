@@ -36,6 +36,10 @@
 		return () => query.removeEventListener('change', onChange);
 	});
 
+	// the toggle in the toolbar overrides the screen size default
+	let chosenView = $state<'day' | 'week' | null>(null);
+	let dayMode = $derived(chosenView ? chosenView === 'day' : narrow);
+
 	// the day view would show empty weekends, so step from Friday straight to Monday and back
 	function stepDay(forward: boolean) {
 		if (!ec) return;
@@ -63,12 +67,12 @@
 	const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 	let options = $derived({
-		view: narrow ? 'timeGridDay' : 'timeGridWeek',
+		view: dayMode ? 'timeGridDay' : 'timeGridWeek',
 		events: unixEventsToEvents(events),
 		height: '100%',
 		allDaySlot: false,
 		// taller hours on phones so that the module names have room
-		slotHeight: narrow ? 40 : 32,
+		slotHeight: dayMode ? 40 : 32,
 		scrollTime: '07:30:00',
 		nowIndicator: true,
 		hiddenDays: hiddenDays,
@@ -105,7 +109,7 @@
 	let isCurrentWeek = $state(() => {
 		const view = ec?.getView();
 		if (!view) return false;
-		if (narrow) return isSameDate(new Date(ec!.getOption('date')), getNextWeekday());
+		if (dayMode) return isSameDate(new Date(ec!.getOption('date')), getNextWeekday());
 
 		const start = new SvelteDate(view.currentStart);
 		start.setDate(start.getDate() + 1);
@@ -130,7 +134,7 @@
 		<button
 			disabled={isCurrentWeek()}
 			onclick={() => {
-				if (narrow) {
+				if (dayMode) {
 					if (ec) ec.setOption('date', getNextWeekday());
 					return;
 				}
@@ -146,26 +150,39 @@
 		<div class="flex gap-1">
 			<button
 				class="btn btn-circle btn-soft btn-sm btn-primary"
-				aria-label={narrow ? 'Vorheriger Tag' : 'Vorherige Woche'}
+				aria-label={dayMode ? 'Vorheriger Tag' : 'Vorherige Woche'}
 				onclick={() => {
-					if (narrow) stepDay(false);
+					if (dayMode) stepDay(false);
 					else if (ec) ec.prev();
 				}}><FontAwesomeIcon icon={faChevronLeft} /></button
 			>
 			<button
 				class="btn btn-circle btn-soft btn-sm btn-primary"
-				aria-label={narrow ? 'Nächster Tag' : 'Nächste Woche'}
+				aria-label={dayMode ? 'Nächster Tag' : 'Nächste Woche'}
 				onclick={() => {
-					if (narrow) stepDay(true);
+					if (dayMode) stepDay(true);
 					else if (ec) ec.next();
 				}}><FontAwesomeIcon icon={faChevronRight} /></button
 			>
 		</div>
 	</div>
 
+	<div class="join mt-3 w-full" role="group" aria-label="Ansicht">
+		<button
+			class="btn join-item grow btn-sm {dayMode ? 'btn-primary' : 'btn-soft'}"
+			aria-pressed={dayMode}
+			onclick={() => (chosenView = 'day')}>Tag</button
+		>
+		<button
+			class="btn join-item grow btn-sm {dayMode ? 'btn-soft' : 'btn-primary'}"
+			aria-pressed={!dayMode}
+			onclick={() => (chosenView = 'week')}>Woche</button
+		>
+	</div>
+
 	<div
 		lang="de"
-		class:dayView={narrow}
+		class:dayView={dayMode}
 		class="weekCalendar mt-3 min-h-0 grow overflow-hidden rounded-box border border-base-300/70"
 	>
 		<Calendar bind:this={ec} plugins={[TimeGrid]} {options} />
@@ -243,6 +260,12 @@
 		margin-inline-end: 0.3rem;
 		font-size: 0.9em;
 		opacity: 0.85;
+	}
+	/* five narrow columns have no room for the time, it is in the details on click */
+	@media (max-width: 639px) {
+		:global(.weekCalendar:not(.dayView) .ev-time) {
+			display: none;
+		}
 	}
 	:global(.weekCalendar .ev-title) {
 		font-weight: 600;

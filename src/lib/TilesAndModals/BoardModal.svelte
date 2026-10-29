@@ -1,10 +1,10 @@
 <script lang="ts">
 	import DashboardModal from '$lib/DashboardModal.svelte';
 	import type { BoardPost } from '$lib/types';
-	import { toastError } from '$lib/stores/toast';
+	import { toastError, toastSuccess } from '$lib/stores/toast';
 	import { formatPostTime } from '$lib/TSHelpers/SharedCalendarHelper';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
-	import { faPaperPlane, faTrash } from '@fortawesome/free-solid-svg-icons';
+	import { faCopy, faPaperPlane, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 	let {
 		modal = $bindable<HTMLDialogElement | null>(null),
@@ -45,6 +45,15 @@
 		}
 	}
 
+	async function copy(entry: BoardPost) {
+		try {
+			await navigator.clipboard.writeText(entry.text);
+			toastSuccess('Kopiert');
+		} catch {
+			toastError('Kopieren nicht möglich, markiere den Text und kopiere ihn von Hand.');
+		}
+	}
+
 	async function remove(entry: BoardPost) {
 		if (!confirm('Nachricht löschen?')) return;
 		if (await send({ action: 'delete', id: entry.id })) await reload();
@@ -75,11 +84,16 @@
 					<div class="card-body gap-1 p-4">
 						<div class="flex items-start gap-2">
 							<div class="min-w-0 grow">
-								<p class="text-sm break-words whitespace-pre-line">{entry.text}</p>
+								<p class="text-sm break-words whitespace-pre-line select-text">{entry.text}</p>
 								<div class="mt-1 text-xs opacity-60">
 									{entry.author || 'Anonym'} · {formatPostTime(entry.created_at)}
 								</div>
 							</div>
+							<button
+								class="btn btn-square btn-ghost btn-sm"
+								aria-label="Nachricht kopieren"
+								onclick={() => copy(entry)}><FontAwesomeIcon icon={faCopy} /></button
+							>
 							{#if entry.mine}
 								<button
 									class="btn btn-square btn-soft btn-sm btn-accent"
