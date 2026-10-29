@@ -99,7 +99,7 @@
 				</div>
 			</div>
 			{#if !basicUserData.seminar_group}
-				<div class="flex items-center gap-2 rounded-xl bg-base-200 p-3">
+				<div class="flex items-center gap-2 tile-box p-3">
 					<FontAwesomeIcon icon={faCircleInfo} class="opacity-60" />
 					<p class="text-sm">
 						Anscheinend hast du keine Seminargruppe. Das ist normal wenn das Studium vorbei ist
@@ -109,7 +109,7 @@
 		{/if}
 		{#if fachsemester != undefined && ects != undefined}
 			<div class="grid grid-cols-2 gap-2">
-				<div class="rounded-xl bg-base-200 p-3">
+				<div class="tile-box p-3">
 					<p class="text-xs font-medium opacity-60" id="fachsem">Fachsemester</p>
 					<p class="text-xl font-bold">
 						{fachsemester}<span class="text-sm font-medium opacity-50"> / 6</span>
@@ -121,7 +121,7 @@
 						max={6}
 					></progress>
 				</div>
-				<div class="rounded-xl bg-base-200 p-3">
+				<div class="tile-box p-3">
 					<p class="text-xs font-medium opacity-60" id="ects">ECTS</p>
 					<p class="text-xl font-bold">
 						{ects}<span class="text-sm font-medium opacity-50"> / 180</span>

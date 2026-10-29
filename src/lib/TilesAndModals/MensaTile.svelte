@@ -14,7 +14,7 @@
 	on:click={() => modal?.showModal()}
 	ready={Boolean(modal)}
 >
-	<div class="flex w-full items-center gap-4 rounded-xl bg-base-200 p-4 text-left">
+	<div class="flex w-full items-center gap-4 tile-box p-4 text-left">
 		<span class="text-4xl" aria-hidden="true">🍝</span>
 		<div>
 			<p class="font-semibold">Was gibt's heute?</p>

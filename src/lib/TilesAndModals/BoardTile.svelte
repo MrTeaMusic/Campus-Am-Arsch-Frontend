@@ -37,7 +37,7 @@
 	{#if posts && posts.length > 0}
 		<ul class="flex w-full flex-col gap-2 text-left">
 			{#each posts.slice(0, 2) as entry (entry.id)}
-				<li class="rounded-xl bg-base-200 px-3 py-2">
+				<li class="tile-box px-3 py-2">
 					<p class="line-clamp-2 text-sm break-words">{entry.text}</p>
 					<p class="mt-1 text-xs opacity-60">
 						<span class="font-semibold">{entry.author || 'Anonym'}</span> · {formatPostTime(

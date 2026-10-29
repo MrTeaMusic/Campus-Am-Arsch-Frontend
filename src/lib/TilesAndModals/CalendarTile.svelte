@@ -6,7 +6,7 @@
 	import CalendarModal from './CalendarModal.svelte';
 	import { persistentStore } from '$lib/TSHelpers/LocalStorageHelper';
 	import { getAltDayString } from '$lib/TSHelpers/DateHelper';
-	import { unixEventsToEvents } from '$lib/Calendar/CalendarFuncs';
+	import { colorByCourse, unixEventsToEvents } from '$lib/Calendar/CalendarFuncs';
 	import type { EventUnix } from '$lib/types';
 	import { toastError } from '$lib/stores/toast';
 	import { loadSharedEvents, sharedEvents, sharedToUnixEvents } from '$lib/stores/sharedEvents';
@@ -83,7 +83,7 @@
 
 	// timetable plus the entries of the shared calendar
 	let allEvents = $derived([
-		...($storedEventsUnix ?? []),
+		...colorByCourse($storedEventsUnix ?? []),
 		...sharedToUnixEvents($sharedEvents ?? [])
 	]);
 

@@ -23,7 +23,7 @@
 
 <DashboardTile title="Prüfungen" icon={faFilePen} clickable={false} ready={status !== null}>
 	{#if status}
-		<div class="flex w-full items-center gap-4 rounded-xl bg-base-200 p-4 text-left">
+		<div class="flex w-full items-center gap-4 tile-box p-4 text-left">
 			<span
 				class="grid size-11 shrink-0 place-content-center rounded-full text-lg {status.open
 					? 'bg-success/15 text-success'

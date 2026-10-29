@@ -36,7 +36,7 @@
 	{#if events && events.length > 0}
 		<ul class="flex w-full flex-col gap-2 text-left">
 			{#each events.slice(0, 3) as event (event.id)}
-				<li class="flex items-center gap-3 rounded-xl bg-base-200 px-3 py-2">
+				<li class="flex items-center gap-3 tile-box px-3 py-2">
 					<span class="h-8 w-1 shrink-0 rounded-full bg-secondary"></span>
 					<div class="min-w-0">
 						<p class="truncate font-semibold">{event.title}</p>

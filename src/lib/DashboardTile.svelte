@@ -66,21 +66,21 @@
 	role={clickable ? undefined : 'group'}
 	class="{pointerPressed
 		? 'scale-[98%]'
-		: ''} flex h-full w-full flex-col items-center gap-2 rounded-box border border-base-300/70 bg-base-100 p-4 text-base-content shadow-sm transition-[transform,box-shadow] sm:w-96 {clickable &&
+		: ''} tile flex h-full w-full flex-col items-center gap-2 rounded-box border border-base-300/70 bg-base-100 p-4 text-base-content shadow-sm transition-[transform,box-shadow] sm:w-96 {clickable &&
 	ready
 		? 'cursor-pointer hover:shadow-md'
 		: ''}"
 >
-	<div class="flex w-full flex-row items-center gap-3">
+	<div class="tile-head flex w-full flex-row items-center gap-3">
 		{#if icon}
 			<span
-				class="grid size-9 shrink-0 place-content-center rounded-xl bg-primary/10 text-primary"
+				class="tile-icon grid size-9 shrink-0 place-content-center rounded-xl bg-primary/10 text-primary"
 				aria-hidden="true"
 			>
 				<FontAwesomeIcon {icon} />
 			</span>
 		{/if}
-		<header class="grow text-left text-lg font-semibold tracking-tight">{title}</header>
+		<header class="tile-title grow text-left text-lg font-semibold tracking-tight">{title}</header>
 		{#if reloadable}
 			<TileInteractiveElementWrapper>
 				{#if reloading}
@@ -111,7 +111,7 @@
 		<slot name="header" />
 	{/if}
 
-	<div class="flex h-full w-full flex-col items-center justify-center">
+	<div class="tile-body flex h-full w-full flex-col items-center justify-center">
 		{#if ready}
 			<slot />
 		{:else}
