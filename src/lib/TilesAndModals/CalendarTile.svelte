@@ -221,7 +221,7 @@
 	:global(.tileCalendar .ec-today) {
 		--ec-day-bg-color: none;
 	}
-	:global(.tileCalendar .ec) {
+	:global(.ec-auto-dark .tileCalendar .ec.ec) {
 		--ec-border-color: none;
 	}
 	:global(.tileCalendar .ec-list .ec-event) {

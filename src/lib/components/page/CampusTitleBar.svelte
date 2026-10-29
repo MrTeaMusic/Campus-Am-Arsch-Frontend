@@ -11,6 +11,7 @@
 		faUpRightFromSquare
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faGithub } from '@fortawesome/free-brands-svg-icons';
+	import SettingsModal from './SettingsModal.svelte';
 
 	const version = `Build ${__APP_BUILD__} · ${__APP_COMMIT__}`;
 	const builtAt = new Date(__APP_BUILT_AT__).toLocaleString('de-DE');
@@ -108,6 +109,7 @@
 				Zurück
 			</a>
 		{/if}
+		<SettingsModal />
 		{#if page.route.id == '/dashboard'}
 			<button
 				class="btn btn-circle btn-ghost btn-sm text-accent"

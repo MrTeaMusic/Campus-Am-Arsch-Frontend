@@ -46,6 +46,20 @@
 		ec.setOption('date', date);
 	}
 
+	// a name that does not fit its lecture ends with "…", the full name is in the details on click
+	function clampToEvent(el: HTMLElement) {
+		const text = el.querySelector<HTMLElement>('.ev-text');
+		if (!text) return;
+		const fit = () => {
+			const style = getComputedStyle(el);
+			const room = el.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+			const lineHeight = parseFloat(getComputedStyle(text).lineHeight);
+			text.style.setProperty('--lines', String(Math.max(1, Math.floor(room / lineHeight))));
+		};
+		fit();
+		new ResizeObserver(fit).observe(el);
+	}
+
 	const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 	let options = $derived({
@@ -53,7 +67,7 @@
 		events: unixEventsToEvents(events),
 		height: '100%',
 		allDaySlot: false,
-		// taller hours on phones so that even short lectures fit their full name
+		// taller hours on phones so that the module names have room
 		slotHeight: narrow ? 40 : 32,
 		scrollTime: '07:30:00',
 		nowIndicator: true,
@@ -67,6 +81,7 @@
 			center: '',
 			end: ''
 		},
+		eventDidMount: (info: { el: HTMLElement }) => clampToEvent(info.el),
 		eventClick: (info: { event: unknown }) => {
 			selectedEvent = info.event;
 			eventInfoModal?.showModal();
@@ -78,7 +93,7 @@
 			const timeStart = info.event.start.toLocaleTimeString('de', { timeStyle: 'short' });
 			const title = typeof info.event.title === 'string' ? info.event.title : '';
 			return {
-				html: `<span class="ev-time">${timeStart}</span><span class="ev-title">${escapeHtml(title)}</span>`
+				html: `<span class="ev-text"><span class="ev-time">${timeStart}</span><span class="ev-title">${escapeHtml(title)}</span></span>`
 			};
 		}
 	});
@@ -204,37 +219,32 @@
 		box-shadow: none;
 		overflow: hidden;
 	}
-	/* time and name in one flowing line, so short lectures still show their whole name */
 	:global(.weekCalendar .ec-event-body) {
 		display: block;
 		min-width: 0;
+	}
+	/* time and name flow as one text that ends with "…" where the lecture is too short */
+	:global(.weekCalendar .ev-text) {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: var(--lines, 2);
+		line-clamp: var(--lines, 2);
+		overflow: hidden;
+		font-size: 0.75rem;
 		line-height: 1.25;
+		/* long German compounds are hyphenated instead of being cut off */
+		overflow-wrap: break-word;
+		hyphens: auto;
+	}
+	:global(.weekCalendar.dayView .ev-text) {
+		font-size: 0.875rem;
 	}
 	:global(.weekCalendar .ev-time) {
 		margin-inline-end: 0.3rem;
-		font-size: 0.7rem;
+		font-size: 0.9em;
 		opacity: 0.85;
 	}
-	/* a name that does not fit its lecture is shown in full while hovering it */
-	:global(.weekCalendar .ec-event:hover) {
-		overflow: visible;
-		z-index: 10;
-	}
-	:global(.weekCalendar .ec-event:hover .ec-event-body) {
-		align-self: flex-start;
-		width: calc(100% + 0.75rem);
-		margin: -0.25rem -0.375rem;
-		padding: 0.25rem 0.375rem;
-		border-radius: 0 0.5rem 0.5rem 0;
-		background: inherit;
-	}
-	:global(.weekCalendar.dayView .ev-title) {
-		font-size: 0.875rem;
-	}
 	:global(.weekCalendar .ev-title) {
-		font-size: 0.75rem;
 		font-weight: 600;
-		overflow-wrap: break-word;
-		hyphens: auto;
 	}
 </style>

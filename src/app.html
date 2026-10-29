@@ -32,6 +32,17 @@
 		<meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)" />
 		<meta name="theme-color" content="#121722" media="(prefers-color-scheme: dark)" />
 		<title>Campus-Am-Arsch</title>
+		<script>
+			// eigene Farbe und Hell/Dunkel vor dem ersten Bild setzen, sonst blitzt kurz das Standard-Design auf
+			try {
+				const a = JSON.parse(localStorage.getItem('appearance') || '{}');
+				if (a.accent && a.accent !== 'blau') document.documentElement.dataset.accent = a.accent;
+				if (a.mode === 'hell') document.documentElement.dataset.theme = 'campus';
+				if (a.mode === 'dunkel') document.documentElement.dataset.theme = 'campus-dark';
+			} catch {
+				// no stored choice
+			}
+		</script>
 		%sveltekit.head%
 	</head>
 

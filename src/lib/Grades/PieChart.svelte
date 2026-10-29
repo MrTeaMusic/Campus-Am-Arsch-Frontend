@@ -4,6 +4,7 @@
 	import { Chart, DoughnutController, ArcElement, Tooltip } from 'chart.js';
 
 	import type { ExamStats } from '$lib/types';
+	import { APPEARANCE_EVENT } from '$lib/TSHelpers/Appearance';
 
 	export let stats: ExamStats;
 	const hasData: boolean = Boolean(stats.successful || stats.unsuccessful || stats.unassessed);
@@ -36,7 +37,7 @@
 
 	onMount(() => {
 		if (browser) {
-			new Chart(pieChartElement, {
+			const chart = new Chart(pieChartElement, {
 				type: 'doughnut',
 				data: chartData,
 				options: {
@@ -46,6 +47,21 @@
 					}
 				}
 			});
+
+			// the chart paints with fixed colors, so repaint it when another app color is chosen
+			const recolor = () => {
+				chart.data.datasets[0].backgroundColor = [
+					getColor('--color-primary'),
+					getColor('--color-accent'),
+					getColor('--color-base-300')
+				];
+				chart.update();
+			};
+			window.addEventListener(APPEARANCE_EVENT, recolor);
+			return () => {
+				window.removeEventListener(APPEARANCE_EVENT, recolor);
+				chart.destroy();
+			};
 		}
 	});
 </script>
