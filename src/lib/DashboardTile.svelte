@@ -66,15 +66,15 @@
 	role={clickable ? undefined : 'group'}
 	class="{pointerPressed
 		? 'scale-[98%]'
-		: ''} tile flex h-full w-full flex-col items-center gap-2 rounded-box border border-base-300/70 bg-base-100 p-4 text-base-content shadow-sm transition-[transform,box-shadow] sm:w-96 {clickable &&
+		: ''} tile flex h-full w-full flex-col items-center gap-2 rounded-box border p-4 text-base-content transition-transform sm:w-96 {clickable &&
 	ready
-		? 'cursor-pointer hover:shadow-md'
+		? 'cursor-pointer'
 		: ''}"
 >
 	<div class="tile-head flex w-full flex-row items-center gap-3">
 		{#if icon}
 			<span
-				class="tile-icon grid size-9 shrink-0 place-content-center rounded-xl bg-primary/10 text-primary"
+				class="tile-icon grid size-9 shrink-0 place-content-center rounded-xl"
 				aria-hidden="true"
 			>
 				<FontAwesomeIcon {icon} />
@@ -111,7 +111,7 @@
 		<slot name="header" />
 	{/if}
 
-	<div class="tile-body flex h-full w-full flex-col items-center justify-center">
+	<div class="tile-body flex h-full w-full flex-col items-center">
 		{#if ready}
 			<slot />
 		{:else}
